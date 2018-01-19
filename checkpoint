@@ -1,0 +1,2 @@
+model_checkpoint_path: "baseline-cue-cnn-cont.ckpt"
+all_model_checkpoint_paths: "baseline-cue-cnn-cont.ckpt"
