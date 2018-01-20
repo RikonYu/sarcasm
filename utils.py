@@ -66,8 +66,6 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                 break
             ins.append([True,trues[0],trues[1]])
             ins.append([False,falses[0],falses[1]])
-            print(trues,falses)
-            raise Exception
             if(len(ins)>=batch_size):
                 ins=clean_up(ins,sent_len)
                 if(singular==False):
