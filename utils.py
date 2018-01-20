@@ -4,7 +4,7 @@ import gensim
 import re
 import csv
 
-embedding_model=gensim.models.KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
+embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
 sent_len=0
 def set_sentlen(l):
@@ -30,7 +30,7 @@ def clean_up(s,sent_len):
 
 
 def pretrain(model,max_epoch,batch_size,foutname):
-    fsent=open('Sentiment.csv','r',encoding='utf-8')
+    fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open(foutname,'w')
     global sent_len
     sentreader=csv.reader(fsent,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
