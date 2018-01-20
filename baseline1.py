@@ -22,7 +22,7 @@ if(TRAINING):
     model.add(Dense(256))
     model.add(Dense(2,activation='softmax'))
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
-    model=utils.train(model,2,512,'baseline1.txt',singular=True)
+    model=utils.train(model,2,256,'baseline1.txt',singular=True)
     model.save('baseline1.h5')
 else:
     model=load_model('baseline1.h5')
