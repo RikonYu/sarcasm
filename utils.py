@@ -74,13 +74,13 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                     #print((ins[0]+ins[1]),ins[2])
                     #raise Exception
                     history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0.05)
-                    print(history.history['accuracy'][0])
+                    #print(model.predict(ins[0]+ins[1],batch_size=batch_sizez))
                 #print(ins)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-            ftrue.seek(0)
-            ffalse.seek(0)
+        ftrue.seek(0)
+        ffalse.seek(0)
     return model
 
 def test(model,singular=True):
