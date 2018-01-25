@@ -71,7 +71,9 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0.05)
                 else:
-                    history=model.fit([a+b for a,b in zip(ins[0],ins[1])],ins[2],epochs=1,verbose=2,validation_split=0.05)
+                    print((ins[0]+ins[1]),ins[2])
+                    raise Exception
+                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0.05)
                 #print(ins)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
