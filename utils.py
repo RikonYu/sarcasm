@@ -71,7 +71,7 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0.05)
                 else:
-                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0.05)
+                    history=model.fit([a+b for a,b in zip(ins[0],ins[1])],ins[2],epochs=1,verbose=2,validation_split=0.05)
                 #print(ins)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
@@ -94,7 +94,7 @@ def test(model,singular=True):
             break
         ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
         if(singular==True):
-            ans=model.predict([ins[0]+ins[1]])
+            ans=model.predict([a+b for a,b in zip(ins[0],ins[1])])
         else:
             ans=model.predict([ins[0],ins[1]])
         loss-=numpy.log(ans[0][1])
