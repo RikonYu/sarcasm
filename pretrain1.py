@@ -10,6 +10,7 @@ from keras.optimizers import Adam
 
 TRAINING=1
 sent_len=540
+esize=300
 utils.set_sentlen(sent_len)
 if(TRAINING):
     model_input=Input(shape=(sent_len,esize,1),dtype='float32')
@@ -34,12 +35,12 @@ if(TRAINING):
 
 
     #pre-train
-    model=utils.pretrain(model,10,'pretrain1_result0.txt')
-    model.save('pretrain-shallow.h5')
+    #model=utils.pretrain(model,10,512,'pretrain1_result0.txt')
+    #model.save('pretrain-shallow.h5')
     #train
     model=Model(inputs=[model_input,add_input],outputs=real_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,10,'pretrain1_result1.txt',singular=False)
+    model=utils.train(model,10,512,'pretrain1_result1.txt',singular=False)
     model.save('pretrain_shallow.h5')
 else:
     model=load_model('pretrain-shallow.h5')
