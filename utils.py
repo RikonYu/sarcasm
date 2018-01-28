@@ -111,5 +111,5 @@ def test(model,singular=True):
         loss-=numpy.log(ans[0][1])
         correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
         total+=1
-    return 'accuracy:',correct/total,'CE loss:',loss/total
+    return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
