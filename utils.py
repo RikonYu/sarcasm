@@ -105,7 +105,7 @@ def test(model,singular=True):
             break
         ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
         if(singular==True):
-            ans=model.predict([a+b for a,b in zip(ins[0],ins[1])])
+            ans=model.predict(ins[0]+ins[1])
         else:
             ans=model.predict([ins[0],ins[1]])
         loss-=numpy.log(ans[0][1])
