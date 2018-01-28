@@ -51,10 +51,11 @@ def pretrain(model,max_epoch,batch_size,foutname):
         next(sentreader)
     return model
 
-def train(model,max_epoch,batch_size,foutname,singular=True):
+def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     ins=[]
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
+    ftest=open(testoutname,'w')
     fout=open(foutname,'w')
     global sent_len
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
@@ -77,6 +78,8 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
+        ftest.write(('epoch:%d'%epoch)+' '.join(test(model,singular)))
+        
         if(batch_size<=0):
             es=EarlyStopping()
             ins=clean_up(ins,sent_len)
