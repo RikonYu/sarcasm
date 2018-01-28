@@ -79,7 +79,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write('\n')
                 ins=[]
         ftest.write(('epoch:%d'%epoch)+' '.join(test(model,singular)))
-        model.save('')
+        #model.save('')
         ftrue.seek(0)
         ffalse.seek(0)
     return model
