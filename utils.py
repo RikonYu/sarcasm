@@ -4,9 +4,10 @@ import gensim
 import re
 import csv
 from keras.callbacks import EarlyStopping
-
+import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
 sent_len=0
 def set_sentlen(l):
     global sent_len
