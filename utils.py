@@ -72,9 +72,9 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             if(len(ins)>=batch_size and batch_size>0):
                 ins=clean_up(ins,sent_len)
                 if(singular==False):
-                    history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0.05)
+                    history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
                 else:
-                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0.05)
+                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
