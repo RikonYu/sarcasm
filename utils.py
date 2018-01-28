@@ -3,6 +3,7 @@ import numpy
 import gensim
 import re
 import csv
+from keras.callbacks import EarlyStopping
 
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
@@ -66,19 +67,24 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
                 break
             ins.append([True,trues[0],trues[1]])
             ins.append([False,falses[0],falses[1]])
-            if(len(ins)>=batch_size):
+            if(len(ins)>=batch_size and batch_size>0):
                 ins=clean_up(ins,sent_len)
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0.05)
                 else:
-                    #print((ins[0]+ins[1]),ins[2])
-                    #raise Exception
                     history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0.05)
-                    #print(model.predict(ins[0]+ins[1],batch_size=batch_sizez))
-                #print(ins)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
+        if(batch_size<=0):
+            es=EarlyStopping()
+            ins=clean_up(ins,sent_len)
+                if(singular==False):
+                    history=model.fit([ins[0],ins[1]],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
+                else:
+                    history=model.fit(ins[0]+ins[1],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
+                fout.write(str(history.history['loss']))
+                fout.write('\n')
         ftrue.seek(0)
         ffalse.seek(0)
     return model
