@@ -79,12 +79,13 @@ def train(model,max_epoch,batch_size,foutname,singular=True):
         if(batch_size<=0):
             es=EarlyStopping()
             ins=clean_up(ins,sent_len)
-                if(singular==False):
-                    history=model.fit([ins[0],ins[1]],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
-                else:
-                    history=model.fit(ins[0]+ins[1],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
-                fout.write(str(history.history['loss']))
-                fout.write('\n')
+            if(singular==False):
+                history=model.fit([ins[0],ins[1]],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
+            else:
+                history=model.fit(ins[0]+ins[1],ins[2],batch_size=256,epochs=max_epoch,verbose=2,validation_split=0.05,callbacks=es)
+            fout.write(str(history.history['loss']))
+            fout.write('\n')
+            break
         ftrue.seek(0)
         ffalse.seek(0)
     return model
