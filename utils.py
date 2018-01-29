@@ -78,7 +78,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-        ftest.write(('epoch:%d'%epoch)+' '.join(test(model,singular)))
+        ftest.write(('epoch:%d'%epoch)+' '.join(test(model,singular))+'\n')
         #model.save('')
         ftrue.seek(0)
         ffalse.seek(0)
