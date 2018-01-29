@@ -41,9 +41,9 @@ def pretrain(model,max_epoch,batch_size,foutname):
     for epoch in range(max_epoch):
         for row in sentreader:
             ins.append([int(row[1]),row[3]])
-            if(len(ins)>meta_batch):
+            if(len(ins)>batch_size):
                 ins=clean_up(ins)
-                history=model.fit(ins[0],ins[1],epochs=1,verbose=2,batch_size=bbatch,validation_split=0)
+                history=model.fit(ins[0],ins[1],epochs=1,verbose=2,validation_split=0)
                 fout.write(history.history['loss'][0])
                 fout.write('\n')
                 ins=[]

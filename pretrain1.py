@@ -1,5 +1,7 @@
 import numpy
 import re
+import os
+import sys
 import gensim
 import keras
 import utils
@@ -8,7 +10,7 @@ from keras.layers import Input,Concatenate
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
 from keras.optimizers import Adam
 
-TRAINING=1
+TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
 utils.set_sentlen(sent_len)
