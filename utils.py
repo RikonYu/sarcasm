@@ -4,6 +4,7 @@ import gensim
 import re
 import csv
 import os
+import tensorflow as tf
 from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
@@ -53,41 +54,42 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    ins=[]
-    ftrue=open('true_context.csv','r')
-    ffalse=open('false_context.csv','r')
-    os.remove(testoutname)
-    os.remove(foutname)
-    global sent_len
-    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    for epoch in range(max_epoch):
-        ftest=open(testoutname,'a')
-        fout=open(foutname,'a')
-        while(True):
-            try:
-                trues=next(treader)
-                falses=next(freader)
-            except:
-                break
-            ins.append([True,trues[0],trues[1]])
-            ins.append([False,falses[0],falses[1]])
-            if(len(ins)>=batch_size and batch_size>0):
-                ins=clean_up(ins,sent_len)
-                if(singular==False):
-                    history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
-                else:
-                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0)
-                fout.write(str(history.history['loss'][0]))
-                fout.write('\n')
-                ins=[]
-        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        ftest.close()
-        fout.close()
-        
-        model.save(foutname+str(epoch)+'.h5')
-        ftrue.seek(0)
-        ffalse.seek(0)
+    with td.device('/cpu:0'):
+        ins=[]
+        ftrue=open('true_context.csv','r')
+        ffalse=open('false_context.csv','r')
+        os.remove(testoutname)
+        os.remove(foutname)
+        global sent_len
+        treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+        freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+        for epoch in range(max_epoch):
+            ftest=open(testoutname,'a')
+            fout=open(foutname,'a')
+            while(True):
+                try:
+                    trues=next(treader)
+                    falses=next(freader)
+                except:
+                    break
+                ins.append([True,trues[0],trues[1]])
+                ins.append([False,falses[0],falses[1]])
+                if(len(ins)>=batch_size and batch_size>0):
+                    ins=clean_up(ins,sent_len)
+                    if(singular==False):
+                        history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
+                    else:
+                        history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0)
+                    fout.write(str(history.history['loss'][0]))
+                    fout.write('\n')
+                    ins=[]
+            ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+            ftest.close()
+            fout.close()
+            
+            model.save(foutname+str(epoch)+'.h5')
+            ftrue.seek(0)
+            ffalse.seek(0)
     return model
 
 def test(model,singular=True):
