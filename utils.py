@@ -55,7 +55,7 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    Xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
+    xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
                         inter_op_parallelism_threads=2,
                         allow_soft_placement=True, 
                         device_count = {'CPU': 2})
