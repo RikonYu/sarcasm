@@ -56,7 +56,7 @@ def pretrain(model,max_epoch,batch_size,foutname):
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     xconfig=tf.ConfigProto()
-    xconfig.device_count{:} = {'CPU': 2}
+    xconfig.device_count['CPU'] = 2
     session = tf.Session(config=xconfig)
     KTF.set_session(session)
     ins=[]
