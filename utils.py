@@ -9,7 +9,7 @@ from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+#os.environ["CUDA_VISIBLE_DEVICES"]='1'
 sent_len=0
 def set_sentlen(l):
     global sent_len
@@ -86,7 +86,6 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
             ftest.close()
             fout.close()
-            
             model.save(foutname+str(epoch)+'.h5')
             ftrue.seek(0)
             ffalse.seek(0)
