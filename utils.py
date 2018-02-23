@@ -12,6 +12,7 @@ embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-v
 esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
 xconfig=tf.ConfigProto()
+print(xconfig.device_count)
 xconfig.device_count = {'CPU': 2}
 session = tf.Session(config=xconfig)
 KTF.set_session(session)
