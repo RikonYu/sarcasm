@@ -5,11 +5,16 @@ import re
 import csv
 import os
 import tensorflow as tf
+import keras.backend.tensorflow_backend as KTF
 from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
-#os.environ["CUDA_VISIBLE_DEVICES"]='1'
+os.environ["CUDA_VISIBLE_DEVICES"]='5'
+config=tf.ConfigProto()
+config.cpu_options_per_process_cpu_memory_fraction=0.1
+session = tf.Session(config=config)
+KTF.set_session(session)
 sent_len=0
 def set_sentlen(l):
     global sent_len
