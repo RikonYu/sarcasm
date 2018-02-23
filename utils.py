@@ -11,9 +11,9 @@ import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
-config=tf.ConfigProto()
-config.device_count = {'CPU': 1}
-session = tf.Session(config=config)
+xconfig=tf.ConfigProto()
+xconfig.device_count = {'CPU': 2}
+session = tf.Session(config=xconfig)
 KTF.set_session(session)
 sent_len=0
 def set_sentlen(l):
@@ -65,35 +65,34 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     os.remove(testoutname)
     os.remove(foutname)
     global sent_len
-    with tf.device('/cpu:0'):
-        treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        for epoch in range(max_epoch):
-            ftest=open(testoutname,'a')
-            fout=open(foutname,'a')
-            while(True):
-                try:
-                    trues=next(treader)
-                    falses=next(freader)
-                except:
-                    break
-                ins.append([True,trues[0],trues[1]])
-                ins.append([False,falses[0],falses[1]])
-                if(len(ins)>=batch_size and batch_size>0):
-                    ins=clean_up(ins,sent_len)
-                    if(singular==False):
-                        history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
-                    else:
-                        history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0)
-                    fout.write(str(history.history['loss'][0]))
-                    fout.write('\n')
-                    ins=[]
-            ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-            ftest.close()
-            fout.close()
-            model.save(foutname+str(epoch)+'.h5')
-            ftrue.seek(0)
-            ffalse.seek(0)
+    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    for epoch in range(max_epoch):
+        ftest=open(testoutname,'a')
+        fout=open(foutname,'a')
+        while(True):
+            try:
+                trues=next(treader)
+                falses=next(freader)
+            except:
+                break
+            ins.append([True,trues[0],trues[1]])
+            ins.append([False,falses[0],falses[1]])
+            if(len(ins)>=batch_size and batch_size>0):
+                ins=clean_up(ins,sent_len)
+                if(singular==False):
+                    history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
+                else:
+                    history=model.fit(ins[0]+ins[1],ins[2],epochs=1,verbose=2,validation_split=0)
+                fout.write(str(history.history['loss'][0]))
+                fout.write('\n')
+                ins=[]
+        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+        ftest.close()
+        fout.close()
+        model.save(foutname+str(epoch)+'.h5')
+        ftrue.seek(0)
+        ffalse.seek(0)
     return model
 
 def test(model,singular=True):
@@ -101,21 +100,20 @@ def test(model,singular=True):
     correct=0
     loss=0
     global sent_len
-    with tf.device('/cpu:0'):
-        ftest=open('test_context.csv','r')
-        treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        while(True):
-            try:
-                row=next(treader)
-            except:
-                break
-            ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
-            if(singular==True):
-                ans=model.predict(ins[0]+ins[1])
-            else:
-                ans=model.predict([ins[0],ins[1]])
-            loss-=numpy.log(ans[0][1])
-            correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
-            total+=1
+    ftest=open('test_context.csv','r')
+    treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    while(True):
+        try:
+            row=next(treader)
+        except:
+            break
+        ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
+        if(singular==True):
+            ans=model.predict(ins[0]+ins[1])
+        else:
+            ans=model.predict([ins[0],ins[1]])
+        loss-=numpy.log(ans[0][1])
+        correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
+        total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
