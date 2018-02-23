@@ -11,11 +11,6 @@ import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
-xconfig=tf.ConfigProto()
-print(xconfig.device_count)
-xconfig.device_count = {'CPU': 2}
-session = tf.Session(config=xconfig)
-KTF.set_session(session)
 sent_len=0
 def set_sentlen(l):
     global sent_len
@@ -60,6 +55,10 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
+    xconfig=tf.ConfigProto()
+    xconfig.device_count = {'CPU': 2}
+    session = tf.Session(config=xconfig)
+    KTF.set_session(session)
     ins=[]
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
