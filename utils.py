@@ -54,13 +54,13 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    with td.device('/cpu:0'):
-        ins=[]
-        ftrue=open('true_context.csv','r')
-        ffalse=open('false_context.csv','r')
-        os.remove(testoutname)
-        os.remove(foutname)
-        global sent_len
+    ins=[]
+    ftrue=open('true_context.csv','r')
+    ffalse=open('false_context.csv','r')
+    os.remove(testoutname)
+    os.remove(foutname)
+    global sent_len
+    with tf.device('/cpu:0'):
         treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         for epoch in range(max_epoch):
@@ -97,20 +97,21 @@ def test(model,singular=True):
     correct=0
     loss=0
     global sent_len
-    ftest=open('test_context.csv','r')
-    treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    while(True):
-        try:
-            row=next(treader)
-        except:
-            break
-        ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
-        if(singular==True):
-            ans=model.predict(ins[0]+ins[1])
-        else:
-            ans=model.predict([ins[0],ins[1]])
-        loss-=numpy.log(ans[0][1])
-        correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
-        total+=1
+    with tf.device('/cpu:0'):
+        ftest=open('test_context.csv','r')
+        treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+        while(True):
+            try:
+                row=next(treader)
+            except:
+                break
+            ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
+            if(singular==True):
+                ans=model.predict(ins[0]+ins[1])
+            else:
+                ans=model.predict([ins[0],ins[1]])
+            loss-=numpy.log(ans[0][1])
+            correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
+            total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
