@@ -5,7 +5,7 @@ import re
 import csv
 import os
 import tensorflow as tf
-import keras.backend.tensorflow_backend as KTF
+from keras import backend as KTF
 from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
@@ -55,8 +55,10 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    xconfig=tf.ConfigProto()
-    xconfig.device_count['CPU'] = 2
+    Xconfig = tf.ConfigProto(intra_op_parallelism_threads=2s, \ 
+                        inter_op_parallelism_threads=2, \
+                        allow_soft_placement=True, \
+                        device_count = {'CPU': 2S})
     session = tf.Session(config=xconfig)
     KTF.set_session(session)
     ins=[]
