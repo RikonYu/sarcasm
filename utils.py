@@ -3,6 +3,7 @@ import numpy
 import gensim
 import re
 import csv
+import os
 from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
@@ -55,12 +56,14 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     ins=[]
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
-    ftest=open(testoutname,'w')
-    fout=open(foutname,'w')
+    os.remove(testoutname)
+    os.remove(foutname)
     global sent_len
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     for epoch in range(max_epoch):
+        ftest=open(testoutname,'a')
+        fout=open(foutname,'a')
         while(True):
             try:
                 trues=next(treader)
@@ -79,7 +82,10 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write('\n')
                 ins=[]
         ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        #model.save('')
+        ftest.close()
+        fout.close()
+        
+        model.save(foutname+str(epoch)+'.h5')
         ftrue.seek(0)
         ffalse.seek(0)
     return model
