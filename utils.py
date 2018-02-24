@@ -64,8 +64,11 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     ins=[]
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
-    os.remove(testoutname)
-    os.remove(foutname)
+    try:
+        os.remove(testoutname)
+        os.remove(foutname)
+    except:
+        pass
     global sent_len
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
