@@ -3,6 +3,7 @@ import numpy
 import gensim
 import re
 import csv
+import gc
 import os
 import tensorflow as tf
 from keras import backend as KTF
@@ -92,6 +93,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
+                gc.collect()
         print('end of epoch %d'%epoch)
         ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
         #ftest.close()
