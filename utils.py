@@ -93,7 +93,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-                gc.collect()
+                os.system("ps aux --sort -rss | head -3 >mem.txt")
         print('end of epoch %d'%epoch)
         ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
         #ftest.close()
