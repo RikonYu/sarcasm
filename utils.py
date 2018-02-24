@@ -58,7 +58,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
                         inter_op_parallelism_threads=2,
                         allow_soft_placement=True, 
-                        device_count = {'CPU': 2})
+                        device_count = {'CPU': 5})
     session = tf.Session(config=xconfig)
     KTF.set_session(session)
     ins=[]
@@ -70,7 +70,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     for epoch in range(max_epoch):
-        ftest=open(testoutname,'a')
+        #ftest=open(testoutname,'a')
         fout=open(foutname,'a')
         while(True):
             try:
@@ -89,8 +89,8 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        ftest.close()
+        #ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+        #ftest.close()
         fout.close()
         model.save(foutname+str(epoch)+'.h5')
         ftrue.seek(0)
@@ -98,6 +98,12 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     return model
 
 def test(model,singular=True):
+    xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
+                        inter_op_parallelism_threads=2,
+                        allow_soft_placement=True, 
+                        device_count = {'CPU': 5})
+    session = tf.Session(config=xconfig)
+    KTF.set_session(session)
     total=0
     correct=0
     loss=0
