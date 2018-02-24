@@ -92,7 +92,8 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-        #ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+        print('end of epoch %d'%epoch)
+        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
         #ftest.close()
         fout.close()
         model.save(foutname+str(epoch)+'.h5')
