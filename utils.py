@@ -56,12 +56,14 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
+    '''
     xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
                         inter_op_parallelism_threads=2,
                         allow_soft_placement=True, 
                         device_count = {'CPU': 5})
     session = tf.Session(config=xconfig)
     KTF.set_session(session)
+    '''
     ins=[]
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
@@ -104,12 +106,14 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     return model
 
 def test(model,singular=True):
+    '''
     xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
                         inter_op_parallelism_threads=2,
                         allow_soft_placement=True, 
                         device_count = {'CPU': 5})
     session = tf.Session(config=xconfig)
     KTF.set_session(session)
+    '''
     total=0
     correct=0
     loss=0
