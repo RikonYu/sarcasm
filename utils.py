@@ -94,7 +94,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write('\n')
                 ins=[]
                 os.system("ps aux --sort -rss | head -3 >>mem.txt")
-        print('end of epoch %d'%epoch)
+        raise Exception
         ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
         #ftest.close()
         fout.close()
