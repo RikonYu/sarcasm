@@ -1,0 +1,3 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+jssambee 47957 36.8  2.5 15031324 3361716 ?    Ssl  17:11  16:06 /usr/bin/python3 -m ipykernel_launcher -f /home/jssambee/.local/share/jupyter/runtime/kernel-0c0de333-c44e-45c9-a541-e0e88449c0b9.json
+pkthekka 38751 11.5  0.3 14222916 466784 ?     Ssl  10:17  53:05 /usr/bin/python3 -m ipykernel_launcher -f /home/pkthekka/.local/share/jupyter/runtime/kernel-5f56f72a-5086-4d8a-a07f-62d764f7ea42.json
