@@ -4,6 +4,7 @@ import gensim
 import re
 import csv
 import gc
+import time
 import os
 import tensorflow as tf
 from keras import backend as KTF
@@ -65,6 +66,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     KTF.set_session(session)
     '''
     ins=[]
+    tt=time.clock()
     ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
     try:
@@ -88,7 +90,6 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             ins.append([False,falses[0],falses[1]])
             if(len(ins)>=batch_size and batch_size>0):
                 ins=clean_up(ins,sent_len)
-                #print(ins[0].shape,ins[1].shape,ins[2].shape)
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
                 else:
@@ -96,12 +97,10 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
-                #os.system("ps aux --sort -rss | head -3 >>mem.txt")
-        #raise Exception
-        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        #ftest.close()
-        fout.close()
+        print(time.clock()-tt)
         model.save(foutname+str(epoch)+'.h5')
+        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+        fout.close()
         ftrue.seek(0)
         ffalse.seek(0)
     return model
