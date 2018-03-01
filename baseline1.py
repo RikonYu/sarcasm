@@ -13,7 +13,7 @@ from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 sent_len=1100
 esize=300
-utils.set_sentlen(sent_len/2)
+utils.set_sentlen(sent_len//2)
 tt=time.clock()
 if(TRAINING):
     model=Sequential()
