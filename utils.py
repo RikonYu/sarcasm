@@ -76,7 +76,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     for epoch in range(max_epoch):
-        #ftest=open(testoutname,'a')
+        ftest=open(testoutname,'a')
         fout=open(foutname,'a')
         while(True):
             try:
@@ -88,7 +88,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             ins.append([False,falses[0],falses[1]])
             if(len(ins)>=batch_size and batch_size>0):
                 ins=clean_up(ins,sent_len)
-                print(ins[0].shape,ins[1].shape,ins[2].shape)
+                #print(ins[0].shape,ins[1].shape,ins[2].shape)
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
                 else:
