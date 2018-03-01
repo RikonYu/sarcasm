@@ -32,7 +32,7 @@ def clean_up(s,sent_len):
         x_2=[re.findall(r'[\w]+',x[2]) for x in s]
         return (numpy.array(read_embedding(x_1,sent_len)).reshape((len(s),sent_len,esize,1)),
                numpy.array(read_embedding(x_2,sent_len)).reshape((len(s),sent_len,esize,1)),
-               y_)
+               numpy.array(y_))
 
 
 def pretrain(model,max_epoch,batch_size,foutname):
