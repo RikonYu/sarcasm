@@ -92,7 +92,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
                 else:
-                    history=model.fit(numpy.concatenate(ins[0],ins[1]),ins[2],epochs=1,verbose=2,validation_split=0)
+                    history=model.fit(numpy.concatenate((ins[0],ins[1]),axis=1),ins[2],epochs=1,verbose=2,validation_split=0)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
