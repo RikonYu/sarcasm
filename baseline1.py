@@ -11,9 +11,9 @@ from keras.layers import Input,Concatenate
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
-sent_len=700
+sent_len=1100
 esize=300
-utils.set_sentlen(sent_len)
+utils.set_sentlen(sent_len/2)
 tt=time.clock()
 if(TRAINING):
     model=Sequential()
@@ -24,7 +24,7 @@ if(TRAINING):
     model.add(Dense(256))
     model.add(Dense(2,activation='softmax'))
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
-    model=utils.train(model,10,128,'baseline1.txt','baseline1-test.txt',singular=True)
+    model=utils.train(model,10,256,'baseline1.txt','baseline1-test.txt',singular=True)
     model.save('baseline1.h5')
 else:
     model=load_model('baseline1.h5')
