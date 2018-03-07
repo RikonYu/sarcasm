@@ -14,7 +14,22 @@ TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
 utils.set_sentlen(sent_len)
+def get_out(inp):
+    conv1=Conv2D(96,(2,esize),activation='relu')(inp)
+    conv2=Conv2D(96,(3,esize),activation='relu')(inp)
+    conv3=Conv2D(96,(4,esize),activation='relu')(inp)
+    pool1=MaxPooling2D((sent_len-1,1))(conv1)
+    pool2=MaxPooling2D((sent_len-2,1))(conv2)
+    pool3=MaxPooling2D((sent_len-3,1))(conv3)
+    flat1=Flatten()(pool1)
+    flat2=Flatten()(pool2)
+    flat3=Flatten()(pool3)
+    conc=Concatenate([flat1,flat2,flat3])
+    dense=Dense(256,activation='relu')(conc)
+    #out=Dense(2,activation='softmax')(dense)
+    return dense
 if(TRAINING):
+    '''
     model_input=Input(shape=(sent_len,esize,1),dtype='float32')
     add_input=Input(shape=(sent_len,esize,1),dtype='float32')
     conv_layer=Conv2D(256,(3,esize),activation='relu')
@@ -32,17 +47,23 @@ if(TRAINING):
     pretrain_out=Dense(2,activation='softmax')(dense1)
     real_conc=keras.layers.concatenate([dense1,dense2])
     real_out=Dense(2,activation='softmax')(real_conc)
-    model=Model(inputs=model_input,outputs=pretrain_out)
+    '''
+    inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
+    add_inp=Input(shape=(sent_len,esize,1),dtype='float32')
+    pre_dense=get_out(inp)
+    real_dense=get_out(add_inp)
+    pre_out=Dense(2,activation='softmax')(pre_dense)
+    real_out=Dense(2,activation='softmax')(Concatenate([pre_dense,real_dense]))
+    model=Model(inputs=inp,outputs=pre_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-
 
     #pre-train
-    model=utils.pretrain(model,5,512,'pretrain1_result0.txt')
+    model=utils.pretrain(model,5,1024,'pretrain1_result0.txt')
     model.save('pretrain-shallow-5.h5')
     #train
-    model=Model(inputs=[model_input,add_input],outputs=real_out)
+    model=Model(inputs=[inp,add_inp],outputs=real_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,20,512,'pretrain1_result1.txt','pretrain1-test.txt',singular=False)
+    model=utils.train(model,10,1024,'pretrain1_result1.txt','pretrain1-test.txt',singular=False)
     model.save('pretrain_shallow.h5')
 else:
     model=load_model('pretrain-shallow.h5')
