@@ -16,6 +16,24 @@ esize=300
 utils.set_sentlen(sent_len//2)
 tt=time.clock()
 if(TRAINING):
+    inp=Input(shape=(sent_len,esize,1),dtype='float32')
+    conv1=Conv2D(96,(2,esize),activation='relu')(inp)
+    conv2=Conv2D(96,(3,esize),activation='relu')(inp)
+    conv3=Conv2D(96,(4,esize),activation='relu')(inp)
+    pool1=MaxPooling2D((sent_len-1,1))(conv1)
+    pool2=MaxPooling2D((sent_len-2,1))(conv2)
+    pool3=MaxPooling2D((sent_len-3,1))(conv3)
+    flat1=Flatten()(pool1)
+    flat2=Flatten()(pool2)
+    flat3=Flatten()(pool3)
+    conc=Concatenate([flat1,flat2,flat3])
+    dense=Dense(256,activation='relu')(conc)
+    out=Dense(2,activation='softmax')(dense)
+    model=Model(inputs=inp,outputs=out)
+    model.compile(optimizer='adam',loss='categorical_crossentropy')
+    model=utils.train(model,10,2048,'baseline1.txt','baseline1-test.txt',singular=True)
+    model.save('baseline1.h5')
+    '''
     model=Sequential()
     model.add(Conv2D(256,(3,esize),activation='relu',padding='valid',input_shape=(sent_len,esize,1)))
     #print(model.output_shape)
@@ -24,8 +42,8 @@ if(TRAINING):
     model.add(Dense(256))
     model.add(Dense(2,activation='softmax'))
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
-    model=utils.train(model,10,1024,'baseline1.txt','baseline1-test.txt',singular=True)
-    model.save('baseline1.h5')
+
+    '''
 else:
     model=load_model('baseline1.h5')
     print(' '.join(utils.test(model,True)))

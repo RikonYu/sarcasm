@@ -35,7 +35,6 @@ def clean_up(s,sent_len):
                numpy.array(read_embedding(x_2,sent_len)).reshape((len(s),sent_len,esize,1)),
                numpy.array(y_))
 
-
 def pretrain(model,max_epoch,batch_size,foutname):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open(foutname,'w')
