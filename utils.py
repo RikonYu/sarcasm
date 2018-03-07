@@ -2,6 +2,7 @@ import keras
 import numpy
 import gensim
 import re
+import pickle
 import csv
 import gc
 import time
@@ -13,10 +14,7 @@ import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
-sent_len=0
-def set_sentlen(l):
-    global sent_len
-    sent_len=l
+sent_len=540
 
 def read_embedding(words,sent_len):
     X=[numpy.resize(numpy.array([embedding_model[word] for word in sent if word in embedding_model]),[sent_len,esize]) for sent in words]
@@ -34,6 +32,26 @@ def clean_up(s,sent_len):
         return (numpy.array(read_embedding(x_1,sent_len)).reshape((len(s),sent_len,esize,1)),
                numpy.array(read_embedding(x_2,sent_len)).reshape((len(s),sent_len,esize,1)),
                numpy.array(y_))
+
+def maker():
+    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    twriter=open('true_pickled.txt','w')
+    fwriter=open('false_pickled.txt','w')
+    while(True):
+        try:
+            trues=next(treader)
+            falses=next(freader)
+        except:
+            break
+        tins=[True,trues[0],trues[1]]
+        fins=[False,falses[0],falses[1]]
+        tins=clean_up(tins,sent_len)
+        fins=clean_up(fins,sent_len)
+        pickle.dump(tins,twriter)
+        pickle.dump(fins,fwriter)
+    twriter.close()
+    fwriter.close()
 
 def pretrain(model,max_epoch,batch_size,foutname):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
@@ -134,3 +152,5 @@ def test(model,singular=True):
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
+if __name__='__main__':
+    maker()

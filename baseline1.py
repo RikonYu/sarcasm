@@ -11,12 +11,11 @@ from keras.layers import Input,Concatenate
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
-sent_len=1100
+sent_len=540
 esize=300
-utils.set_sentlen(sent_len//2)
 tt=time.clock()
 if(TRAINING):
-    inp=Input(shape=(sent_len,esize,1),dtype='float32')
+    inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     conv1=Conv2D(96,(2,esize),activation='relu')(inp)
     conv2=Conv2D(96,(3,esize),activation='relu')(inp)
     conv3=Conv2D(96,(4,esize),activation='relu')(inp)
