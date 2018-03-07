@@ -84,29 +84,26 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     '''
     ins=[]
     tt=time.clock()
-    ftrue=open('true_context.csv','r')
-    ffalse=open('false_context.csv','r')
+    ftrue=open('true_pickled.txt','r')
+    ffalse=open('false_pickled.txt','r')
     try:
         os.remove(testoutname)
         os.remove(foutname)
     except:
         pass
     global sent_len
-    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     for epoch in range(max_epoch):
         ftest=open(testoutname,'a')
         fout=open(foutname,'a')
         while(True):
             try:
-                trues=next(treader)
-                falses=next(freader)
+                trues=pickle.load(ftrue)
+                falses=pickle.load(ffalse)
             except:
                 break
-            ins.append([True,trues[0],trues[1]])
-            ins.append([False,falses[0],falses[1]])
+            ins.append(trues)
+            ins.append(ffalses)
             if(len(ins)>=batch_size and batch_size>0):
-                ins=clean_up(ins,sent_len)
                 if(singular==False):
                     history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
                 else:
