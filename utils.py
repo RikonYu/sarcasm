@@ -35,15 +35,15 @@ def clean_up(x,sent_len):
                numpy.array(y_)]
 
 def maker():
-    ftrue=open('true_context.csv','r')
-    ffalse=open('false_context.csv','r')
-    ftest=open('test_context.csv','r')
+    ftrue=open('./true_context.csv','r')
+    ffalse=open('./false_context.csv','r')
+    ftest=open('./test_context.csv','r')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    twriter=open('true_pickled.txt','wb')
-    fwriter=open('false_pickled.txt','wb')
-    tester=open('tesst_pickled.txt','wb')
+    twriter=open('./true_pickled.txt','wb')
+    fwriter=open('./false_pickled.txt','wb')
+    tester=open('./test_pickled.txt','wb')
     while(True):
         try:
             trues=next(treader)
