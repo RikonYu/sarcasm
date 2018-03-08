@@ -13,7 +13,7 @@ from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
-os.environ["CUDA_VISIBLE_DEVICES"]='5'
+os.environ["CUDA_VISIBLE_DEVICES"]='5,6'
 sent_len=540
 
 def read_embedding(words,sent_len):
@@ -58,7 +58,13 @@ def maker():
         pickle.dump(fins,fwriter)
     twriter.close()
     fwriter.close()
-
+    while(True):
+        try:
+            row=next(testder)
+            ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
+            pickle.dump(ins,tester)
+    tester.close()
+            
 def pretrain(model,max_epoch,batch_size,foutname):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open(foutname,'w')
@@ -138,14 +144,13 @@ def test(model,singular=True):
     correct=0
     loss=0
     global sent_len
-    ftest=open('test_context.csv','r')
+    ftest=open('test_pickled.txt','rb')
     treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     while(True):
         try:
-            row=next(treader)
+            ins=pickle.load(ftest)
         except:
             break
-        ins=clean_up([[int(row[2]),row[0],row[1]]],sent_len)
         if(singular==True):
             ans=model.predict(ins[0]+ins[1])
         else:
