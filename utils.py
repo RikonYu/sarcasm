@@ -17,7 +17,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]='5,6'
 sent_len=540
 
 def read_embedding(words,sent_len):
-    X=numpy.resize(numpy.array([embedding_model[word] for word in sent if word in embedding_model]),[sent_len,esize])
+    X=numpy.resize(numpy.array([embedding_model[word] for word in words if word in embedding_model]),[sent_len,esize])
     return X
 
 def clean_up(x,sent_len):
