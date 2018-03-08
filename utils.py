@@ -36,11 +36,14 @@ def clean_up(x,sent_len):
 
 def maker():
     ftrue=open('true_contxt.csv','r')
-    ffalse=open('false_context.csv','w')
+    ffalse=open('false_context.csv','r')
+    ftest=open('test_context.csv','r')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
     twriter=open('true_pickled.txt','wb')
     fwriter=open('false_pickled.txt','wb')
+    tester=open('tesst_pickled.txt','wb')
     while(True):
         try:
             trues=next(treader)
