@@ -14,6 +14,7 @@ TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
 utils.set_sentlen(sent_len)
+<<<<<<< HEAD
 def get_out(inp):
     conv1=Conv2D(96,(2,esize),activation='relu')(inp)
     conv2=Conv2D(96,(3,esize),activation='relu')(inp)
@@ -30,6 +31,9 @@ def get_out(inp):
     return dense
 if(TRAINING):
     '''
+=======
+if(TRAINING):
+>>>>>>> 9fd9e8deccdc0fc9ef627b9123233a4159f93886
     model_input=Input(shape=(sent_len,esize,1),dtype='float32')
     add_input=Input(shape=(sent_len,esize,1),dtype='float32')
     conv_layer=Conv2D(256,(3,esize),activation='relu')
@@ -47,6 +51,7 @@ if(TRAINING):
     pretrain_out=Dense(2,activation='softmax')(dense1)
     real_conc=keras.layers.concatenate([dense1,dense2])
     real_out=Dense(2,activation='softmax')(real_conc)
+<<<<<<< HEAD
     '''
     inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     add_inp=Input(shape=(sent_len,esize,1),dtype='float32')
@@ -64,6 +69,19 @@ if(TRAINING):
     model=Model(inputs=[inp,add_inp],outputs=real_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
     model=utils.train(model,10,1024,'pretrain1_result1.txt','pretrain1-test.txt',singular=False)
+=======
+    model=Model(inputs=model_input,outputs=pretrain_out)
+    model.compile(optimizer='adam',loss='categorical_crossentropy')
+
+
+    #pre-train
+    model=utils.pretrain(model,5,512,'pretrain1_result0.txt')
+    model.save('pretrain-shallow-5.h5')
+    #train
+    model=Model(inputs=[model_input,add_input],outputs=real_out)
+    model.compile(optimizer='adam',loss='categorical_crossentropy')
+    model=utils.train(model,20,512,'pretrain1_result1.txt','pretrain1-test.txt',singular=False)
+>>>>>>> 9fd9e8deccdc0fc9ef627b9123233a4159f93886
     model.save('pretrain_shallow.h5')
 else:
     model=load_model('pretrain-shallow.h5')

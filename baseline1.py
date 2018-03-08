@@ -13,6 +13,10 @@ from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
+<<<<<<< HEAD
+=======
+tt=time.clock()
+>>>>>>> 9fd9e8deccdc0fc9ef627b9123233a4159f93886
 if(TRAINING):
     inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     conv1=Conv2D(96,(2,esize),activation='relu')(inp)
