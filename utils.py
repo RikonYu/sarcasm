@@ -41,9 +41,9 @@ def maker():
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    twriter=open('./true_pickled.txt','wb')
-    fwriter=open('./false_pickled.txt','wb')
-    tester=open('./test_pickled.txt','wb')
+    twriter=open('./true_pickled.txt','w')
+    fwriter=open('./false_pickled.txt','w')
+    tester=open('./test_pickled.txt','w')
     while(True):
         try:
             trues=next(treader)
