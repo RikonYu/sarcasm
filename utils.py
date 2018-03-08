@@ -25,13 +25,13 @@ def clean_up(x,sent_len):
     if(len(x)==2):
         y_=[1-x[0],int(x[0])]
         x_=re.findall(r'[\w]+',x[1])
-        return [numpy.array(read_embedding(x_,sent_len)).reshape((len(s),sent_len,esize,1)),y_]
+        return [numpy.array(read_embedding(x_,sent_len)).reshape((sent_len,esize,1)),y_]
     else:
         y_=[1-x[0],int(x[0])]
         x_1=re.findall(r'[\w]+',x[1])
         x_2=re.findall(r'[\w]+',x[2])
-        return [numpy.array(read_embedding(x_1,sent_len)).reshape((len(s),sent_len,esize,1)),
-               numpy.array(read_embedding(x_2,sent_len)).reshape((len(s),sent_len,esize,1)),
+        return [numpy.array(read_embedding(x_1,sent_len)).reshape((sent_len,esize,1)),
+               numpy.array(read_embedding(x_2,sent_len)).reshape((sent_len,esize,1)),
                numpy.array(y_)]
 
 def maker():
@@ -119,9 +119,15 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             ins.append(ffalses)
             if(len(ins)>=batch_size and batch_size>0):
                 if(singular==False):
-                    history=model.fit([ins[0],ins[1]],ins[2],epochs=1,verbose=2,validation_split=0)
+                    x0=numpy.stack([k[0] for k in ins])
+                    x1=numpy.stack([k[1] for k in ans])
+                    y=numpy.stack([k[2] for k in ans])
+                    history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
                 else:
-                    history=model.fit(numpy.concatenate((ins[0],ins[1]),axis=1),ins[2],epochs=1,verbose=2,validation_split=0)
+                    x0=numpy.stack([k[0] for k in ins])
+                    x1=numpy.stack([k[1] for k in ans])
+                    y=numpy.stack([k[2] for k in ans])
+                    history=model.fit(numpy.concatenate((x0,x1),axis=1),x2,epochs=1,verbose=2,validation_split=0)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
