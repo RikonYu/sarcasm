@@ -61,8 +61,10 @@ def maker():
     while(True):
         try:
             row=next(testder)
-            ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
-            pickle.dump(ins,tester)
+        except:
+            break
+        ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
+        pickle.dump(ins,tester)
     tester.close()
             
 def pretrain(model,max_epoch,batch_size,foutname):
