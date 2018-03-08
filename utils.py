@@ -20,24 +20,27 @@ def read_embedding(words,sent_len):
     X=[numpy.resize(numpy.array([embedding_model[word] for word in sent if word in embedding_model]),[sent_len,esize]) for sent in words]
     return X
 
-def clean_up(s,sent_len):
-    if(len(s[0])==2):
-        y_=[[1-x[0],int(x[0])] for x in s]
-        x_=[re.findall(r'[\w]+',x[1]) for x in s]
-        return numpy.array(read_embedding(x_,sent_len)).reshape((len(s),sent_len,esize,1)),y_
+def clean_up(x,sent_len):
+    
+    if(len(x)==2):
+        y_=[1-x[0],int(x[0])]
+        x_=re.findall(r'[\w]+',x[1])
+        return [numpy.array(read_embedding(x_,sent_len)).reshape((len(s),sent_len,esize,1)),y_]
     else:
-        y_=[[1-x[0],int(x[0])] for x in s]
-        x_1=[re.findall(r'[\w]+',x[1]) for x in s]
-        x_2=[re.findall(r'[\w]+',x[2]) for x in s]
-        return (numpy.array(read_embedding(x_1,sent_len)).reshape((len(s),sent_len,esize,1)),
+        y_=[1-x[0],int(x[0])]
+        x_1=re.findall(r'[\w]+',x[1])
+        x_2=re.findall(r'[\w]+',x[2])
+        return [numpy.array(read_embedding(x_1,sent_len)).reshape((len(s),sent_len,esize,1)),
                numpy.array(read_embedding(x_2,sent_len)).reshape((len(s),sent_len,esize,1)),
-               numpy.array(y_))
+               numpy.array(y_)]
 
 def maker():
+    ftrue=open('true_contxt.csv','r')
+    ffalse=open('false_context.csv','w')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    twriter=open('true_pickled.txt','w')
-    fwriter=open('false_pickled.txt','w')
+    twriter=open('true_pickled.txt','wb')
+    fwriter=open('false_pickled.txt','wb')
     while(True):
         try:
             trues=next(treader)
@@ -149,5 +152,5 @@ def test(model,singular=True):
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
-if __name__='__main__':
+if __name__=='__main__':
     maker()
