@@ -34,20 +34,23 @@ def clean_up(s,sent_len):
                numpy.array(y_))
 
 def maker():
+    
+    ftrue=open('true_context.csv','r')
+    ffalse=open('false_context.csv','r')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    twriter=open('true_pickled.txt','w')
-    fwriter=open('false_pickled.txt','w')
+    twriter=open('true_pickled.txt','wb')
+    fwriter=open('false_pickled.txt','wb')
     while(True):
         try:
             trues=next(treader)
             falses=next(freader)
         except:
             break
-        tins=[True,trues[0],trues[1]]
-        fins=[False,falses[0],falses[1]]
-        tins=clean_up(tins,sent_len)
-        fins=clean_up(fins,sent_len)
+        tins=[[True,trues[0],trues[1]]]
+        fins=[[False,falses[0],falses[1]]]
+        tins=clean_up(tins,sent_len)[0]
+        fins=clean_up(fins,sent_len)[0]
         pickle.dump(tins,twriter)
         pickle.dump(fins,fwriter)
     twriter.close()
@@ -149,5 +152,5 @@ def test(model,singular=True):
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
-if __name__='__main__':
+if __name__=='__main__':
     maker()
