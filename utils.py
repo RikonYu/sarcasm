@@ -35,7 +35,7 @@ def clean_up(x,sent_len):
                numpy.array(y_)]
 
 def maker():
-    ftrue=open('true_contxt.csv','r')
+    ftrue=open('true_context.csv','r')
     ffalse=open('false_context.csv','r')
     ftest=open('test_context.csv','r')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
@@ -98,8 +98,8 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     '''
     ins=[]
     tt=time.clock()
-    ftrue=open('true_pickled.txt','r')
-    ffalse=open('false_pickled.txt','r')
+    ftrue=open('true_pickled.txt','rb')
+    ffalse=open('false_pickled.txt','rb')
     try:
         os.remove(testoutname)
         os.remove(foutname)
