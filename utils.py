@@ -40,7 +40,7 @@ def maker():
     ftest=open('test_context.csv','r')
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
+    testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     twriter=open('true_pickled.txt','wb')
     fwriter=open('false_pickled.txt','wb')
     tester=open('tesst_pickled.txt','wb')
