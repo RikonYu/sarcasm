@@ -13,7 +13,7 @@ from keras.callbacks import EarlyStopping
 import os
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
-os.environ["CUDA_VISIBLE_DEVICES"]='5,6'
+os.environ["CUDA_VISIBLE_DEVICES"]='5'
 sent_len=540
 
 def read_embedding(words,sent_len):
@@ -110,7 +110,6 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
                 falses=next(freader)
             except:
                 break
-            
             tins=[True,trues[0],trues[1]]
             fins=[False,falses[0],falses[1]]
             tins=clean_up(tins,sent_len)
