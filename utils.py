@@ -6,6 +6,7 @@ import pickle
 import csv
 import gc
 import time
+from keras.models import load_model
 import os
 import tensorflow as tf
 from keras import backend as KTF
@@ -102,6 +103,11 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
         pass
     global sent_len
     for epoch in range(max_epoch):
+        try:
+            model=load_model(foutname+str(epoch)+'.h5')
+            continue
+        except:
+            pass
         ftest=open(testoutname,'a')
         fout=open(foutname,'a')
         while(True):
@@ -183,27 +189,20 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     return model
 '''
 def test(model,singular=True):
-    '''
-    xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
-                        inter_op_parallelism_threads=2,
-                        allow_soft_placement=True, 
-                        device_count = {'CPU': 5})
-    session = tf.Session(config=xconfig)
-    KTF.set_session(session)
-    '''
     total=0
     correct=0
     loss=0
     global sent_len
-    ftest=open('test_pickled.txt','rb')
+    ftest=open('test_context.csv','r')
     treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     while(True):
         try:
-            ins=pickle.load(ftest)
+            row=next(treader)
         except:
             break
+                    ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         if(singular==True):
-            ans=model.predict(ins[0]+ins[1])
+            ans=model.predict(numpy.concatenate((ins[0],ins[1]),axis=1))
         else:
             ans=model.predict([ins[0],ins[1]])
         loss-=numpy.log(ans[0][1])
