@@ -123,13 +123,13 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
             if(len(ins)>=batch_size and batch_size>0):
                 if(singular==False):
                     x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ans])
-                    y=numpy.stack([k[2] for k in ans])
+                    x1=numpy.stack([k[1] for k in ins])
+                    y=numpy.stack([k[2] for k in ins])
                     history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
                 else:
                     x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ans])
-                    y=numpy.stack([k[2] for k in ans])
+                    x1=numpy.stack([k[1] for k in ins])
+                    y=numpy.stack([k[2] for k in ins])
                     history=model.fit(numpy.concatenate((x0,x1),axis=1),x2,epochs=1,verbose=2,validation_split=0)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
