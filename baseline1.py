@@ -43,7 +43,7 @@ if(TRAINING):
 
     '''
 else:
-    model=load_model('baseline1.h5')
+    model=load_model('baseline1.txt0.h5')
     print(' '.join(utils.test(model,True)))
 print(time.clock()-tt)
 
