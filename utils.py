@@ -200,7 +200,7 @@ def test(model,singular=True):
             row=next(treader)
         except:
             break
-                    ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
+        ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         if(singular==True):
             ans=model.predict(numpy.concatenate((ins[0],ins[1]),axis=1))
         else:
