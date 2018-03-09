@@ -91,16 +91,58 @@ def pretrain(model,max_epoch,batch_size,foutname):
         fsent.seek(0)
         next(sentreader)
     return model
-
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    '''
-    xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
-                        inter_op_parallelism_threads=2,
-                        allow_soft_placement=True, 
-                        device_count = {'CPU': 5})
-    session = tf.Session(config=xconfig)
-    KTF.set_session(session)
-    '''
+    ins=[]
+    tt=time.clock()
+    ftrue=open('./true_context.csv','r')
+    ffalse=open('./false_context.csv','r')
+    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    try:
+        os.remove(testoutname)
+        os.remove(foutname)
+    except:
+        pass
+    global sent_len
+    for epoch in range(max_epoch):
+        ftest=open(testoutname,'a')
+        fout=open(foutname,'a')
+        while(True):
+            try:
+                trues=next(treader)
+                falses=next(freader)
+            except:
+                break
+            
+            tins=[True,trues[0],trues[1]]
+            fins=[False,falses[0],falses[1]]
+            tins=clean_up(tins,sent_len)
+            fins=clean_up(fins,sent_len)
+            ins.append(tins)
+            ins.append(fins)
+            if(len(ins)>=batch_size and batch_size>0):
+                if(singular==False):
+                    x0=numpy.stack([k[0] for k in ins])
+                    x1=numpy.stack([k[1] for k in ans])
+                    y=numpy.stack([k[2] for k in ans])
+                    history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
+                else:
+                    x0=numpy.stack([k[0] for k in ins])
+                    x1=numpy.stack([k[1] for k in ans])
+                    y=numpy.stack([k[2] for k in ans])
+                    history=model.fit(numpy.concatenate((x0,x1),axis=1),x2,epochs=1,verbose=2,validation_split=0)
+                fout.write(str(history.history['loss'][0]))
+                fout.write('\n')
+                ins=[]
+        print(time.clock()-tt)
+        model.save(foutname+str(epoch)+'.h5')
+        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+        fout.close()
+        ftrue.seek(0)
+        ffalse.seek(0)
+    return model
+'''
+def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     ins=[]
     tt=time.clock()
     ftrue=open('true_pickled.txt','rb')
@@ -143,7 +185,7 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
         ftrue.seek(0)
         ffalse.seek(0)
     return model
-
+'''
 def test(model,singular=True):
     '''
     xconfig = tf.ConfigProto(intra_op_parallelism_threads=2, 
