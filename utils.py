@@ -16,6 +16,9 @@ esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5,6'
 sent_len=540
 
+def deal(x):
+    return x.reshape((x.shape[0],sent_len,esize,1))
+
 def read_embedding(words,sent_len):
     X=numpy.resize(numpy.array([embedding_model[word] for word in words if word in embedding_model]),[sent_len,esize])
     return X
@@ -25,13 +28,13 @@ def clean_up(x,sent_len):
     if(len(x)==2):
         y_=[1-x[0],int(x[0])]
         x_=re.findall(r'[\w]+',x[1])
-        return [numpy.array(read_embedding(x_,sent_len)).reshape((sent_len,esize,1)),y_]
+        return [numpy.array(read_embedding(x_,sent_len)),y_]
     else:
         y_=[1-x[0],int(x[0])]
         x_1=re.findall(r'[\w]+',x[1])
         x_2=re.findall(r'[\w]+',x[2])
-        return [numpy.array(read_embedding(x_1,sent_len)).reshape((sent_len,esize,1)),
-               numpy.array(read_embedding(x_2,sent_len)).reshape((sent_len,esize,1)),
+        return [numpy.array(read_embedding(x_1,sent_len)),
+               numpy.array(read_embedding(x_2,sent_len)),
                numpy.array(y_)]
 
 def maker():
@@ -57,6 +60,7 @@ def maker():
         pickle.dump(tins,twriter)
         pickle.dump(fins,fwriter)
     twriter.close()
+    '''
     fwriter.close()
     while(True):
         try:
@@ -66,6 +70,7 @@ def maker():
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         pickle.dump(ins,tester)
     tester.close()
+    '''
             
 def pretrain(model,max_epoch,batch_size,foutname):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
