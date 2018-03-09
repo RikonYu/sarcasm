@@ -24,7 +24,7 @@ if(TRAINING):
     flat1=Flatten()(pool1)
     flat2=Flatten()(pool2)
     flat3=Flatten()(pool3)
-    conc=Concatenate([flat1,flat2,flat3])
+    conc=Concatenate()([flat1,flat2,flat3])
     dense=Dense(256,activation='relu')(conc)
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
