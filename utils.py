@@ -92,7 +92,7 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 def train(model,epoch,batch_size,foutname,testoutname,singular=True):
     model_name=(foutname+'_'+str(epoch)+'.h5')
-    if(max_epoch<=0):
+    if(epoch<=0):
         return
     ins=[]
     tt=time.clock()
