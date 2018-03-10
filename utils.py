@@ -90,7 +90,7 @@ def pretrain(model,max_epoch,batch_size,foutname):
         fsent.seek(0)
         next(sentreader)
     return model
-def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
+def train(model,epoch,batch_size,foutname,testoutname,singular=True):
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(max_epoch<=0):
         return
