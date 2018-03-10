@@ -45,7 +45,6 @@ if(TRAINING):
 else:
     model=load_model('baseline10.h5')
     print(' '.join(utils.test(model,True)))
-print(time.clock()-tt)
 
 
     
