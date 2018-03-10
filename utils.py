@@ -146,7 +146,7 @@ def train(model,epoch,batch_size,foutname,testoutname,singular=True):
         ftrue.close()
         ffalse.close()
         ftest.close()
-    subprocess.Popen(['python3',foutname,max_epoch-1],shell=True)
+    subprocess.Popen(['python3',foutname,epoch-1],shell=True)
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
