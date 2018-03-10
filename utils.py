@@ -111,7 +111,7 @@ def train(model,epoch,batch_size,foutname,testoutname,singular=True):
     try:
         KTF.clear_session()
         model=load_model(model_name)
-        subprocess.Popen(['python3',foutname,str(epoch-1)])
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
         return
     except:
         pass
