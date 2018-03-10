@@ -29,7 +29,7 @@ if(TRAINING):
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',singular=True)
+    utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',singular=True)
     #model.save('baseline1.h5')
     '''
     model=Sequential()
