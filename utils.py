@@ -6,6 +6,7 @@ import pickle
 import csv
 import gc
 import time
+import subprocess
 from keras.models import load_model
 import os
 import tensorflow as tf
@@ -90,6 +91,9 @@ def pretrain(model,max_epoch,batch_size,foutname):
         next(sentreader)
     return model
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
+    model_name=(foutname+'_'+str(epoch)+'.h5')
+    if(max_epoch<=0):
+        return
     ins=[]
     tt=time.clock()
     ftrue=open('./true_context.csv','r')
@@ -102,47 +106,49 @@ def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     except:
         pass
     global sent_len
-    for epoch in range(max_epoch):
+    
+    #for epoch in range(max_epoch):
+    try:
+        model=load_model(model_name)
+        continue
+    except:
+        pass
+    ftest=open(testoutname,'a')
+    fout=open(foutname,'a')
+    while(True):
         try:
-            model=load_model(foutname+str(epoch)+'.h5')
-            continue
+            trues=next(treader)
+            falses=next(freader)
         except:
-            pass
-        ftest=open(testoutname,'a')
-        fout=open(foutname,'a')
-        while(True):
-            try:
-                trues=next(treader)
-                falses=next(freader)
-            except:
-                break
-            tins=[True,trues[0],trues[1]]
-            fins=[False,falses[0],falses[1]]
-            tins=clean_up(tins,sent_len)
-            fins=clean_up(fins,sent_len)
-            ins.append(tins)
-            ins.append(fins)
-            if(len(ins)>=batch_size and batch_size>0):
-                if(singular==False):
-                    x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ins])
-                    y=numpy.stack([k[2] for k in ins])
-                    history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
-                else:
-                    x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ins])
-                    y=numpy.stack([k[2] for k in ins])
-                    history=model.fit(numpy.concatenate((x0,x1),axis=1),y,epochs=1,verbose=2,validation_split=0)
-                fout.write(str(history.history['loss'][0]))
-                fout.write('\n')
-                ins=[]
-        print(time.clock()-tt)
-        model.save(foutname+str(epoch)+'.h5')
-        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        fout.close()
-        ftrue.seek(0)
-        ffalse.seek(0)
-    return model
+            break
+        tins=[True,trues[0],trues[1]]
+        fins=[False,falses[0],falses[1]]
+        tins=clean_up(tins,sent_len)
+        fins=clean_up(fins,sent_len)
+        ins.append(tins)
+        ins.append(fins)
+        if(len(ins)>=batch_size and batch_size>0):
+            if(singular==False):
+                x0=numpy.stack([k[0] for k in ins])
+                x1=numpy.stack([k[1] for k in ins])
+                y=numpy.stack([k[2] for k in ins])
+                history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
+            else:
+                x0=numpy.stack([k[0] for k in ins])
+                x1=numpy.stack([k[1] for k in ins])
+                y=numpy.stack([k[2] for k in ins])
+                history=model.fit(numpy.concatenate((x0,x1),axis=1),y,epochs=1,verbose=2,validation_split=0)
+            fout.write(str(history.history['loss'][0]))
+            fout.write('\n')
+            ins=[]
+    print(time.clock()-tt)
+    model.save(model_name)
+    ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+    fout.close()
+    ftrue.seek(0)
+    ffalse.seek(0)
+    subprocess.Popen(['python3',foutname,max_epoch-1])
+    #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
     ins=[]

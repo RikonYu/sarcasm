@@ -29,8 +29,8 @@ if(TRAINING):
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,10,2048,'baseline1.txt','baseline1-test.txt',singular=True)
-    model.save('baseline1.h5')
+    model=utils.train(model,TRAINING,2048,'baseline','baseline1-test.txt',singular=True)
+    #model.save('baseline1.h5')
     '''
     model=Sequential()
     model.add(Conv2D(256,(3,esize),activation='relu',padding='valid',input_shape=(sent_len,esize,1)))
@@ -43,7 +43,7 @@ if(TRAINING):
 
     '''
 else:
-    model=load_model('baseline1.txt0.h5')
+    model=load_model('baseline10.h5')
     print(' '.join(utils.test(model,True)))
 print(time.clock()-tt)
 
