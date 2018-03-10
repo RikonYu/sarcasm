@@ -90,8 +90,8 @@ def pretrain(model,max_epoch,batch_size,foutname):
         fsent.seek(0)
         next(sentreader)
     return model
-def train(def_model,epoch,batch_size,foutname,testoutname,singular=True):
-    
+def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
+    model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
         return
@@ -115,6 +115,8 @@ def train(def_model,epoch,batch_size,foutname,testoutname,singular=True):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
         return
     except:
+        pass
+    if(model==None):
         model=default_model
     ftest=open(testoutname,'a')
     fout=open(foutname+'.txt','a')
