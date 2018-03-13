@@ -17,7 +17,8 @@ def draw10(model,X,Y,X_,Y_):
     model.compile(optimizer='sgd',loss='categorical_crossentropy',metrics=['accuracy'])
     ans=[]
     for i in range(10):
-        histy=model.fit(X,Y,epochs=1,validation_split=0)
+        histy=model.fit_generator(datagen.flow(x_train, y_train,
+                                batch_size=batch_size),epochs=1)
         ans.append(model.evaluate(X_,Y_)[1])
     fout.write(str(ans)+'\n')
         
@@ -25,15 +26,15 @@ def test(X,Y,X_,Y_):
     inp=Input(shape=(X.shape[1:]))
     mid=Flatten()(inp)
     out=Dense(10,activation='softmax')(mid)
-    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
+    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y_)
     mid=Dropout(0.5)(Dense(512,activation='relu')(mid))
-    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
+    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y_)
     mid=Dropout(0.5)(Dense(512,activation='relu')(mid))
-    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
+    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y_)
     mid=Dropout(0.5)(Dense(512,activation='relu')(mid))
-    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
+    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y_)
     mid=Dropout(0.5)(Dense(512,activation='relu')(mid))
-    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
+    draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y_)
     
     
     
@@ -119,12 +120,12 @@ else:
 
 test(x_train,y_train,x_test,y_test)
 cans=[]
-for i in 10:
+for i in range(10):
     model.fit_generator(datagen.flow(x_train, y_train,
-                                     batch_size=batch_size),
-                        epochs=1,
-                        validation_data=(x_test, y_test),
-                        workers=4)
-    cans.append(model.evaluate(x_test, y_test, verbose=1)[1])
+                                    batch_size=batch_size),
+                            epochs=1,
+                            validation_data=(x_test, y_test),
+                            workers=4)
+    cans.append(model.evaluate(X_,Y_,verbose=1))
 fout.write(cans)
 plt.show()
