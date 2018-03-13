@@ -95,10 +95,11 @@ def pretrain(model,max_epoch,batch_size,foutname):
     return model
 def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toffset=0,foffset=0):
     '''
-    start_time=time.clock()
+
     config = tf.ConfigProto(device_count = {'CPU': 10})
     sess = tf.Session(config=config)
     '''
+    start_time=time.clock()
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
