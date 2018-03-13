@@ -91,6 +91,10 @@ def pretrain(model,max_epoch,batch_size,foutname):
         next(sentreader)
     return model
 def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
+    config = tf.ConfigProto()
+    config.device_count = {'CPU': 10}
+    sess = tf.Session(config=config)
+    
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
@@ -223,4 +227,5 @@ def test(model,singular=True):
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
 if __name__=='__main__':
-    maker()
+    ex=['all','your','base','are','belong','to','us']
+    print(embedding_model[ex])
