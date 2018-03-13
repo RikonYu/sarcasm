@@ -14,7 +14,7 @@ fout=open('A4.txt','w')
 
 def draw10(model,X,Y,X_,Y_):
     global total
-    model.compile(optimizer='sgd',loss='categorical_crossentropy',metrics=['accuracy'])
+    model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
     ans=[]
     for i in range(10):
         histy=model.fit_generator(datagen.flow(x_train, y_train,
@@ -123,9 +123,7 @@ cans=[]
 for i in range(10):
     model.fit_generator(datagen.flow(x_train, y_train,
                                     batch_size=batch_size),
-                            epochs=1,
-                            validation_data=(x_test, y_test),
-                            workers=4)
-    cans.append(model.evaluate(X_,Y_,verbose=1))
+                            epochs=1)
+    cans.append(model.evaluate(x_test,y_test,verbose=1))
 fout.write(cans)
 plt.show()
