@@ -20,7 +20,7 @@ sent_len=540
 
 def read_embedding(words,sent_len):
     X=filter(lambda i: i in embedding_model.vocab,words)
-    if(X=[]):
+    if(X==[]):
         return numpy.zeros([sent_len,esize])
     X=numpy.resize(numpy.array(embedding_model[X]),[sent_len,esize])
     return X
