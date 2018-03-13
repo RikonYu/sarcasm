@@ -20,6 +20,8 @@ sent_len=540
 
 def read_embedding(words,sent_len):
     X=filter(lambda i: i in embedding_model.vocab,words)
+    if(X=[]):
+        return numpy.zeros([sent_len,esize])
     X=numpy.resize(numpy.array(embedding_model[X]),[sent_len,esize])
     return X
 
@@ -233,5 +235,5 @@ def test(model,singular=True):
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
 if __name__=='__main__':
-    ex=['all','your','base','are','belong','us']
-    print(embedding_model[ex])
+    ex=[]
+    print(read_embedding(ex,200))
