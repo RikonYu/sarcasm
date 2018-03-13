@@ -9,6 +9,9 @@ from keras.layers import Conv2D, MaxPooling2D
 import matplotlib.pyplot as plt
 import os
 total=1
+
+fout=open('A4.txt','w')
+
 def draw10(model,X,Y,X_,Y_):
     global total
     model.compile(optimizer='sgd',loss='categorical_crossentropy',metrics=['accuracy'])
@@ -16,11 +19,10 @@ def draw10(model,X,Y,X_,Y_):
     for i in range(10):
         histy=model.fit(X,Y,epochs=1,validation_split=0)
         ans.append(model.evaluate(X_,Y_)[1])
-    plt.plot(ans,total)
-    total+=1
+    fout.write(str(ans)+'\n')
         
 def test(X,Y,X_,Y_):
-    inp=Input(shape=(x.shape[1:]))
+    inp=Input(shape=(X.shape[1:]))
     mid=Flatten()(inp)
     out=Dense(10,activation='softmax')(mid)
     draw10(Model(inputs=inp,outputs=out),X,Y,X_,Y)
@@ -40,7 +42,6 @@ num_classes = 10
 epochs = 10
 data_augmentation = True
 num_predictions = 20
-model_name = 'keras_cifar10_trained_model.h5'
 
 # The data, split between train and test sets:
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -125,5 +126,5 @@ for i in 10:
                         validation_data=(x_test, y_test),
                         workers=4)
     cans.append(model.evaluate(x_test, y_test, verbose=1)[1])
-plt.plot(cans,0)
+fout.write(cans)
 plt.show()
