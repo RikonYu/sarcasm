@@ -29,15 +29,12 @@ if(TRAINING):
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    toffset=0
-    foffset=0
+    offset=0
     try:
-        toffset=int(sys.argv[2])
-        foffset=int(sys.argv[2])
-        
+        offset=int(sys.argv[2])
     except:
         pass
-    utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',singular=True,toffset,foffset)
+    utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',True,toffset,foffset)
     #model.save('baseline1.h5')
     '''
     model=Sequential()
