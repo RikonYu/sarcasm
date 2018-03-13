@@ -110,8 +110,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
     
     #for epoch in range(max_epoch):
     try:
-        KTF.clear_session()
         model=load_model(model_name)
+        KTF.clear_session()
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
         return
     except:
@@ -153,7 +153,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
     ftrue.close()
     ffalse.close()
     ftest.close()
-    subprocess.Popen(['python3',foutname,str(epoch-1)])
+    subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
