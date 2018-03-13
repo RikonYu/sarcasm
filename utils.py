@@ -19,7 +19,8 @@ os.environ["CUDA_VISIBLE_DEVICES"]='5'
 sent_len=540
 
 def read_embedding(words,sent_len):
-    X=numpy.resize(numpy.array([embedding_model[word] for word in words if word in embedding_model]),[sent_len,esize])
+    X=filter(lambda i: i in embedding_model.vocab,words)
+    X=numpy.resize(numpy.array(embedding_model[X]),[sent_len,esize])
     return X
 
 def clean_up(x,sent_len):
@@ -233,5 +234,5 @@ def test(model,singular=True):
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
 if __name__=='__main__':
-    ex=['all','your','base','are','belong','to','us']
+    ex=['all','your','base','are','belong','us']
     print(embedding_model[ex])
