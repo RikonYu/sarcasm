@@ -29,9 +29,12 @@ if(TRAINING):
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    offset=0
+    toffset=0
+    foffset=0
     try:
-        offset=int(sys.argv[2])
+        toffset=int(sys.argv[2])
+        foffset=int(sys.argv[2])
+        
     except:
         pass
     utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',True,toffset,foffset)
