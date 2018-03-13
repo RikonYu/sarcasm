@@ -93,7 +93,7 @@ def pretrain(model,max_epoch,batch_size,foutname):
         fsent.seek(0)
         next(sentreader)
     return model
-def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toffset=0,foffset=0):
+def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     '''
 
     config = tf.ConfigProto(device_count = {'CPU': 10})
@@ -120,8 +120,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toff
     
     #for epoch in range(max_epoch):
     try:
-        model=load_model(model_name)
         KTF.clear_session()
+        model=load_model(model_name)
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),toffset,foffset])
         return
     except:
@@ -169,6 +169,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toff
     ftest.close()
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
+        return
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
