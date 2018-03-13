@@ -14,6 +14,7 @@ TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
 if(TRAINING):
+    KTF.clear_session()
     inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     conv1=Conv2D(96,(2,esize),activation='relu')(inp)
     conv2=Conv2D(96,(3,esize),activation='relu')(inp)

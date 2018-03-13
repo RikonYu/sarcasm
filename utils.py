@@ -100,6 +100,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     sess = tf.Session(config=config)
     '''
     start_time=time.clock()
+    KTF.clear_session()
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
@@ -120,7 +121,6 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     
     #for epoch in range(max_epoch):
     try:
-        KTF.clear_session()
         model=load_model(model_name)
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),toffset,foffset])
         return
