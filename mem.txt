@@ -1,3 +1,0 @@
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-m89yu    56727  174  4.1 7910548 5507096 pts/2 Sl+  17:57  19:54 python3 baseline1.py 1
-jssambee 47957 28.4  2.5 15031324 3363024 ?    Ssl  17:11  16:06 /usr/bin/python3 -m ipykernel_launcher -f /home/jssambee/.local/share/jupyter/runtime/kernel-0c0de333-c44e-45c9-a541-e0e88449c0b9.json
