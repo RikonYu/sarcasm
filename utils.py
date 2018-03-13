@@ -94,10 +94,11 @@ def pretrain(model,max_epoch,batch_size,foutname):
         next(sentreader)
     return model
 def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toffset=0,foffset=0):
+    '''
     start_time=time.clock()
     config = tf.ConfigProto(device_count = {'CPU': 10})
     sess = tf.Session(config=config)
-    
+    '''
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
@@ -165,7 +166,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toff
     ftrue.close()
     ffalse.close()
     ftest.close()
-    subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
+    if(epoch>0):
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
