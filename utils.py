@@ -90,7 +90,8 @@ def pretrain(model,max_epoch,batch_size,foutname):
         fsent.seek(0)
         next(sentreader)
     return model
-def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
+def train(default_model,epoch,batch_size,foutname,testoutname,singular=True,toffset=0,foffset=0):
+    start_time=time.clock()
     config = tf.ConfigProto()
     config.device_count = {'CPU': 10}
     sess = tf.Session(config=config)
@@ -100,9 +101,10 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
     if(epoch<=0):
         return
     ins=[]
-    tt=time.clock()
     ftrue=open('./true_context.csv','r')
     ffalse=open('./false_context.csv','r')
+    ftrue.seek(toffset)
+    ffalse.seek(foffset)
     treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     try:
@@ -116,7 +118,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
     try:
         model=load_model(model_name)
         KTF.clear_session()
-        subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),toffset,foffset])
         return
     except:
         pass
@@ -150,14 +152,18 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular=True):
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
-    print(time.clock()-tt)
+        if(time.clock()-start_time>=1900):
+            model.save(model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),ftrue.tell(),ffalse.tell()])
+            return
+            
     model.save(model_name)
     ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
     fout.close()
     ftrue.close()
     ffalse.close()
     ftest.close()
-    subprocess.Popen(['python3',foutname+'.py',str(epoch-1)])
+    subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
