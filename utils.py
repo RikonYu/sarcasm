@@ -160,9 +160,10 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
-        if(time.clock()-start_time>=1900):
+        print(time.clock()-start_time)
+        if(time.clock()-start_time>=30):
             model.save(model_name)
-            subprocess.Popen(['python3',foutname+'.py',str(epoch),ftrue.tell(),ffalse.tell()])
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
             return
             
     model.save(model_name)
