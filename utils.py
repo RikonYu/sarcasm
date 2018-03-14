@@ -93,6 +93,8 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
         fsent.seek(0)
         next(sentreader)
     if(max_epoch>0):
+        subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
+        return
         
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
