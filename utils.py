@@ -75,6 +75,9 @@ def maker():
     '''
             
 def pretrain(model,max_epoch,batch_size,foutname,offset):
+    start_time=time.time()
+    model=None
+    model_name=(foutname+'_pr_'+str(max_epoch)+'.h5')
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open(foutname,'w')
     global sent_len
@@ -82,6 +85,7 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
     ins=[]
     next(sentreader)
     for epoch in range(max_epoch):
+        #HERE
         for row in sentreader:
             ins.append([int(row[1]),row[3]])
             if(len(ins)>batch_size):
@@ -90,6 +94,10 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
+            if(time.time()-start_time>=1900):
+            model.save(model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
+            return
         fsent.seek(0)
         next(sentreader)
     if(max_epoch>0):
