@@ -26,7 +26,6 @@ def get_out(inp):
     flat3=Flatten()(pool3)
     conc=Concatenate([flat1,flat2,flat3])
     dense=Dense(256,activation='relu')(conc)
-    #out=Dense(2,activation='softmax')(dense)
     return dense
 if(TRAINING):
     '''
@@ -49,6 +48,14 @@ if(TRAINING):
     real_conc=keras.layers.concatenate([dense1,dense2])
     real_out=Dense(2,activation='softmax')(real_conc)
     '''
+    toffset=0
+    foffset=0
+    try:
+        toffset=int(sys.argv[2])
+        foffset=int(sys.argv[2])
+        
+    except:
+        pass
     inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     add_inp=Input(shape=(sent_len,esize,1),dtype='float32')
     pre_dense=get_out(inp)
@@ -56,22 +63,19 @@ if(TRAINING):
     pre_out=Dense(2,activation='softmax')(pre_dense)
     real_out=Dense(2,activation='softmax')(Concatenate([pre_dense,real_dense]))
     model=Model(inputs=inp,outputs=pre_out)
-    model.compile(optimizer='adam',loss='categorical_crossentropy')
-
     #pre-train
-    model=utils.pretrain(model,5,1024,'pretrain1_result0.txt')
-    model.save('pretrain-shallow-5.h5')
+    if(os.path.isfile('pretrain-pr.h5')==False):
+        
+        model.compile(optimizer='adam',loss='categorical_crossentropy')
+        utils.pretrain(model,5,1024,'pretrain1_result0.txt')
+    model.load_weights("pretrain-pr.h5")
     #train
     model=Model(inputs=[inp,add_inp],outputs=real_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,10,1024,'pretrain1_result1.txt','pretrain1-test.txt',singular=False)
+    model=utils.train(model,10,1024,'pretrain1','pretrain1-test.txt',False,0,0)
     model=Model(inputs=model_input,outputs=pretrain_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')
-
-
-    #pre-train
-    model=utils.pretrain(model,5,512,'pretrain1_result0.txt')
-    model.save('pretrain-shallow-5.h5')
+    
     #train
     model=Model(inputs=[model_input,add_input],outputs=real_out)
     model.compile(optimizer='adam',loss='categorical_crossentropy')

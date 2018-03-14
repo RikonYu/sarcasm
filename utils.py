@@ -74,7 +74,7 @@ def maker():
     tester.close()
     '''
             
-def pretrain(model,max_epoch,batch_size,foutname):
+def pretrain(model,max_epoch,batch_size,foutname,offset):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open(foutname,'w')
     global sent_len
@@ -92,13 +92,9 @@ def pretrain(model,max_epoch,batch_size,foutname):
                 ins=[]
         fsent.seek(0)
         next(sentreader)
-    return model
+    if(max_epoch>0):
+        
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
-    '''
-
-    config = tf.ConfigProto(device_count = {'CPU': 10})
-    sess = tf.Session(config=config)
-    '''
     start_time=time.time()
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
@@ -109,8 +105,6 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ffalse=open('./false_context.csv','r')
     ftrue.seek(toffset)
     ffalse.seek(foffset)
-    #treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    #freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     try:
         os.remove(testoutname)
         os.remove(foutname)
@@ -133,6 +127,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         trues=ftrue.readline()
         falses=ffalse.readline()
         if(not trues):
+            break
+        if(not falses):
             break
         tr=csv.reader([trues],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
@@ -173,6 +169,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
         return
+    else:
+        model.save(foutname+'.h5')
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
