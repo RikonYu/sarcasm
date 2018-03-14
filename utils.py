@@ -130,13 +130,12 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ftest=open(testoutname,'a')
     fout=open(foutname+'.txt','a')
     while(True):
-        try:
-            trues=ftrue.readline()
-            falses=ffalse.readline()
-            tr=csv.reader([trues],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-            fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        except:
+        trues=ftrue.readline()
+        falses=ffalse.readline()
+        if(not trues):
             break
+        tr=csv.reader([trues],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+        fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         trues=next(tr)
         falses=next(fr)
             
