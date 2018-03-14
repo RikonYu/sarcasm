@@ -99,7 +99,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     config = tf.ConfigProto(device_count = {'CPU': 10})
     sess = tf.Session(config=config)
     '''
-    start_time=time.clock()
+    start_time=time.time()
     model=None
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
@@ -160,8 +160,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
-        print(time.clock()-start_time)
-        if(time.clock()-start_time>=30):
+        if(time.time()-start_time>=1900):
             model.save(model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
             return
