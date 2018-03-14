@@ -138,7 +138,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         except:
             break
         trues=next(tr)
-        falses=next(falses)
+        falses=next(fr)
             
         tins=[True,trues[0],trues[1]]
         fins=[False,falses[0],falses[1]]
