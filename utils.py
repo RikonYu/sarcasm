@@ -109,8 +109,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ffalse=open('./false_context.csv','r')
     ftrue.seek(toffset)
     ffalse.seek(foffset)
-    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    #treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    #freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     try:
         os.remove(testoutname)
         os.remove(foutname)
@@ -131,10 +131,15 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     fout=open(foutname+'.txt','a')
     while(True):
         try:
-            trues=next(treader)
-            falses=next(freader)
+            trues=ftrue.readline()
+            falses=ffalse.readline()
+            tr=csv.reader([trues],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+            fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         except:
             break
+        trues=next(tr)
+        falses=next(falses)
+            
         tins=[True,trues[0],trues[1]]
         fins=[False,falses[0],falses[1]]
         tins=clean_up(tins,sent_len)
