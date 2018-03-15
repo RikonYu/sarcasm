@@ -90,7 +90,7 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
             ins.append([int(row[1]),row[3]])
             if(len(ins)>batch_size):
                 ins=clean_up(ins,sent_len)
-                history=model.fit(ins[0],ins[1],epochs=1,verbose=2,validation_split=0)
+                history=model.fit(ins[0],ins[1],epochs=1,verbose=0,validation_split=0)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 ins=[]
@@ -156,7 +156,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
                 x0=numpy.stack([k[0] for k in ins])
                 x1=numpy.stack([k[1] for k in ins])
                 y=numpy.stack([k[2] for k in ins])
-                history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
+                history=model.fit([x0,x1],y,epochs=1,verbose=0,validation_split=0)
             else:
                 x0=numpy.stack([k[0] for k in ins])
                 x1=numpy.stack([k[1] for k in ins])
