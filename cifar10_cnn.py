@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import os
 total=1
 
-fout=open('A4b.txt','a')
+fout=open('A4c.txt','a')
 
 def draw10(model,X,Y,X_,Y_):
     global total
@@ -57,23 +57,23 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
                  input_shape=x_train.shape[1:]))
-model.add(Activation('sigmoid'))
+model.add(Activation('relu'))
 model.add(Conv2D(32, (3, 3)))
-model.add(Activation('sigmoid'))
+model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))
-model.add(Activation('sigmoid'))
+model.add(Activation('relu'))
 model.add(Conv2D(64, (3, 3)))
-model.add(Activation('sigmoid'))
+model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+#model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(512))
-model.add(Activation('sigmoid'))
-model.add(Dropout(0.5))
+model.add(Activation('relu'))
+#model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
@@ -120,10 +120,11 @@ else:
 
 #test(x_train,y_train,x_test,y_test)
 cans=[]
-for i in range(10):
+for i in range(20):
     model.fit_generator(datagen.flow(x_train, y_train,
                                     batch_size=batch_size),
                             epochs=1)
-    cans.append(model.evaluate(x_test,y_test,verbose=1))
+    cans.append([model.evaluate_generator(datagen.flow(x_train, y_train,
+                                    batch_size=batch_size))[0],model.evaluate(x_test,y_test,verbose=1)[1]])
 fout.write(str(cans))
 plt.show()
