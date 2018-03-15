@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import os
 total=1
 
-fout=open('A4.txt','a')
+fout=open('A4b.txt','a')
 
 def draw10(model,X,Y,X_,Y_):
     global total
@@ -57,22 +57,22 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
                  input_shape=x_train.shape[1:]))
-model.add(Activation('relu'))
+model.add(Activation('sigmoid'))
 model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
+model.add(Activation('sigmoid'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Conv2D(64, (3, 3), padding='same'))
-model.add(Activation('relu'))
+model.add(Activation('sigmoid'))
 model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
+model.add(Activation('sigmoid'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(512))
-model.add(Activation('relu'))
+model.add(Activation('sigmoid'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
