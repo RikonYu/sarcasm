@@ -130,7 +130,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         model=load_model(model_name)
         if(toffset==0 and foffset==0):
             print('Epoch %d found'%epoch)
-            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
+            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
             return
     except:
         pass
@@ -184,7 +184,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ffalse.close()
     ftest.close()
     if(epoch>0):
-        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
     else:
         model.save(foutname+'.h5')

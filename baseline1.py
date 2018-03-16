@@ -33,12 +33,9 @@ if(TRAINING):
     model.compile(optimizer='adam',loss='categorical_crossentropy')
     toffset=0
     foffset=0
-    try:
+    if(len(sys.argv)>2):
         toffset=int(sys.argv[2])
-        foffset=int(sys.argv[2])
-        
-    except:
-        pass
+        foffset=int(sys.argv[3])
     utils.train(model,TRAINING,2048,'baseline1','baseline1-test.txt',True,toffset,foffset)
     #model.save('baseline1.h5')
     '''
