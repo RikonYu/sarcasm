@@ -129,7 +129,7 @@ for i in range(20):
     model.fit_generator(datagen.flow(x_train, y_train,
                                     batch_size=batch_size),
                             epochs=1)
-    cans.append([model.evaluate_generator(datagen.flow(x_train, y_train,
-'''                                  batch_size=batch_size))[1],model.evaluate(x_test,y_test,verbose=1)[1]])
+    cans.append([model.evaluate_generator(datagen.flow(x_train, y_train,batch_size=batch_size))[1],model.evaluate(x_test,y_test,verbose=1)[1]])
+'''
 fout.write(str(cans))
 plt.show()
