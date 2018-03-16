@@ -41,7 +41,7 @@ def test(X,Y,X_,Y_):
 batch_size = 32
 num_classes = 10
 epochs = 10
-data_augmentation = True
+data_augmentation = False
 num_predictions = 20
 
 # The data, split between train and test sets:
