@@ -122,22 +122,23 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         os.remove(foutname)
     except:
         pass
-    
+
     if(toffset==0):
-        try:
+        if(os.path.isfile(model_name)):
             model=load_model(model_name)
-            print('Epoch %d found'%epoch)
+            print('found trained model %s,proceed'%model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
             return
-        except:
-            pass
-    try:
-        if(toffset==0):
-            model=load_model(model_name)
+        elif(os.path.isfile((foutname+'_'+str(epoch+1)+'.h5'))):
+            model=load_model((foutname+'_'+str(epoch+1)+'.h5'))
+            print('found latest model %s, training'%(foutname+'_'+str(epoch+1)+'.h5'))
         else:
-            model=load_model(foutname+'_'+str(epoch+1)+'.h5')
-    except:
-        model=default_model
+            model=default_model
+            print('using blank model')
+    else:
+        model=load_model(model_name)
+        print('resume %s'%model_name)
+        
     ftrue.seek(toffset)
     ffalse.seek(foffset)
     
