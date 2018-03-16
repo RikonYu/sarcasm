@@ -110,32 +110,36 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
     model=None
+    global sent_len
     model_name=(foutname+'_'+str(epoch)+'.h5')
     if(epoch<=0):
         return
     ins=[]
     ftrue=open('./true_context.csv','r')
     ffalse=open('./false_context.csv','r')
-    ftrue.seek(toffset)
-    ffalse.seek(foffset)
     try:
         os.remove(testoutname)
         os.remove(foutname)
     except:
         pass
-    global sent_len
     
-    #for epoch in range(max_epoch):
-    try:
-        model=load_model(model_name)
-        if(toffset==0 and foffset==0):
+    if(toffset==0):
+        try:
+            model=load_model(model_name)
             print('Epoch %d found'%epoch)
             subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
             return
+        except:
+            pass
+    try:
+        if(toffset==0):
+            model=load_model(model_name)
+        else:
+            model=load_model(foutname+'_'+str(epoch+1)+'.h5')
     except:
-        pass
-    if(model==None):
         model=default_model
+    ftrue.seek(toffset)
+    ffalse.seek(foffset)
     
     print("Start training on epoch %d"%epoch)
     ftest=open(testoutname,'a')
