@@ -92,11 +92,16 @@ x_test /= 255
 
 if not data_augmentation:
     print('Not using data augmentation.')
-    model.fit(x_train, y_train,
+    cans=[]
+    for i in range(20):
+        model.fit(x_train, y_train,
               batch_size=batch_size,
-              epochs=epochs,
+              epochs=1,
               validation_data=(x_test, y_test),
               shuffle=True)
+            cans.append([model.evaluate(x_train,y_train
+                                    batch_size=batch_size))[1],model.evaluate(x_test,y_test,verbose=1)[1]])
+
 else:
     print('Using real-time data augmentation.')
     # This will do preprocessing and realtime data augmentation:
