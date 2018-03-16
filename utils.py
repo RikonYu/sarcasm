@@ -95,8 +95,8 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
                 fout.write('\n')
                 ins=[]
             if(time.time()-start_time>=1900):
-            model.save(model_name)
-            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
+                model.save(model_name)
+                subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
             return
         fsent.seek(0)
         next(sentreader)
@@ -125,7 +125,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     #for epoch in range(max_epoch):
     try:
         model=load_model(model_name)
-        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),toffset,foffset])
+        if(toffset==0 and foffset==0):
+            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
         return
     except:
         pass
