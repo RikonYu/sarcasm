@@ -79,27 +79,30 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
     model=None
     model_name=(foutname+'_pr_'+str(max_epoch)+'.h5')
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
-    fout=open(foutname,'w')
+    fout=open('pre'+foutname,'w')
     global sent_len
-    sentreader=csv.reader(fsent,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    #sentreader=csv.reader(fsent,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     ins=[]
     next(sentreader)
-    for epoch in range(max_epoch):
-        #HERE
-        for row in sentreader:
-            ins.append([int(row[1]),row[3]])
-            if(len(ins)>batch_size):
-                ins=clean_up(ins,sent_len)
-                history=model.fit(ins[0],ins[1],epochs=1,verbose=0,validation_split=0)
-                fout.write(str(history.history['loss'][0]))
-                fout.write('\n')
-                ins=[]
-            if(time.time()-start_time>=1900):
-                model.save(model_name)
-                subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
-            return
-        fsent.seek(0)
-        next(sentreader)
+    fsent.readline()
+    if(offset!=0):
+        fsent.seek(offset)
+    while(True):
+        rdr=fsent.readline()
+        row=next(csv.reader(rdr,delimiter=','))
+        if(not row):
+            break
+        ins.append([int(row[1]),row[3]])
+        if(len(ins)>batch_size):
+            ins=clean_up(ins,sent_len)
+            history=model.fit(ins[0],ins[1],epochs=1,verbose=0,validation_split=0)
+            fout.write(str(history.history['loss'][0]))
+            fout.write('\n')
+            ins=[]
+        if(time.time()-start_time>=1900):
+            model.save(model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
+        return
     if(max_epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
         return
@@ -126,12 +129,15 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     try:
         model=load_model(model_name)
         if(toffset==0 and foffset==0):
+            print('Epoch %d found'%epoch)
             subprocess.Popen(['python3',foutname+'.py',str(epoch-1),0,0])
-        return
+            return
     except:
         pass
     if(model==None):
         model=default_model
+    
+    print("Start training on epoch %d"%epoch)
     ftest=open(testoutname,'a')
     fout=open(foutname+'.txt','a')
     while(True):
