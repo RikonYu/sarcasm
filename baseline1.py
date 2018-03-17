@@ -50,8 +50,15 @@ if(TRAINING):
 
     '''
 else:
-    model=load_model('baseline1.h5')
-    print(' '.join(utils.test(model,True)))
-
+    min_loss=1000
+    min_pos=-1
+    for i in range(TRAINING):
+        model=load_model('baseline1_%d.h5'%i)
+        ans=utils.test(model,True)
+        print(' '.join(ans))
+        if(ans[3]<min_loss):
+            min_loss=ans[3]
+            min_pos=i
+    os.system('cp baseline1_%d.h5 baseline1.h5'%min_pos)
 
     
