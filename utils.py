@@ -82,7 +82,7 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
     fout=open('pre'+foutname,'w')
     global sent_len
     ins=[]
-    if(toffset==0):
+    if(offset==0):
         if(os.path.isfile(model_name)):
             model=load_model(model_name)
             print('found trained model %s,proceed'%model_name)
