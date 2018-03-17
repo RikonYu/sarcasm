@@ -52,7 +52,7 @@ if(TRAINING):
 else:
     min_loss=1000
     min_pos=-1
-    for i in range(10):
+    for i in range(1,10):
         model=load_model('baseline1_%d.h5'%i)
         ans=utils.test(model,True)
         print(' '.join(ans))
