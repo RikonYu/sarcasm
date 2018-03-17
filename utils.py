@@ -81,17 +81,30 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open('pre'+foutname,'w')
     global sent_len
-    #sentreader=csv.reader(fsent,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
     ins=[]
-    next(sentreader)
-    fsent.readline()
-    if(offset!=0):
-        fsent.seek(offset)
+    if(toffset==0):
+        if(os.path.isfile(model_name)):
+            model=load_model(model_name)
+            print('found trained model %s,proceed'%model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
+            return
+        elif(os.path.isfile((foutname+'_'+str(epoch+1)+'.h5'))):
+            model=load_model((foutname+'_'+str(epoch+1)+'.h5'))
+            print('found latest model %s, training'%(foutname+'_'+str(epoch+1)+'.h5'))
+        else:
+            model=default_model
+            print('using blank model')
+    else:
+        model=load_model(model_name)
+        print('resume %s'%model_name)
+    fsent.seek(offset)
+    if(offset==0):
+        fsent.readline()
     while(True):
         rdr=fsent.readline()
-        row=next(csv.reader(rdr,delimiter=','))
-        if(not row):
+        if(not rdr):
             break
+        row=next(csv.reader(rdr,delimiter=','))
         ins.append([int(row[1]),row[3]])
         if(len(ins)>batch_size):
             ins=clean_up(ins,sent_len)
@@ -112,7 +125,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     model=None
     global sent_len
     model_name=(foutname+'_'+str(epoch)+'.h5')
-    if(epoch<=0):
+    if(epoch<0):
         return
     ins=[]
     ftrue=open('./true_context.csv','r')
@@ -143,7 +156,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ffalse.seek(foffset)
     
     print("Start training on epoch %d"%epoch)
-    ftest=open(testoutname,'a')
+    #ftest=open(testoutname,'a')
     fout=open(foutname+'.txt','a')
     while(True):
         trues=ftrue.readline()
@@ -183,11 +196,11 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
             return
             
     model.save(model_name)
-    ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+    #ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
     fout.close()
     ftrue.close()
     ffalse.close()
-    ftest.close()
+    #ftest.close()
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
@@ -256,7 +269,7 @@ def test(model,singular=True):
             ans=model.predict(numpy.concatenate(([ins[0]],[ins[1]]),axis=1))
         else:
             ans=model.predict([[ins[0]],[ins[1]]])
-        loss-=numpy.log(ans[0][1])
+        loss-=numpy.log2(ans[0][1])
         correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)

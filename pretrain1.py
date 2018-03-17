@@ -32,7 +32,7 @@ if(TRAINING):
     foffset=0
     try:
         toffset=int(sys.argv[2])
-        foffset=int(sys.argv[2])
+        foffset=int(sys.argv[3])
         
     except:
         pass
@@ -43,18 +43,24 @@ if(TRAINING):
     pre_out=Dense(2,activation='softmax')(pre_dense)
     real_out=Dense(2,activation='softmax')(Concatenate([pre_dense,real_dense]))
     model=Model(inputs=inp,outputs=pre_out)
+    if(os.path.isfile('pretrain1-pr.h5')==False):
     #pre-train
-    if(os.path.isfile('pretrain-pr.h5')==False):
-        
         model.compile(optimizer='adam',loss='categorical_crossentropy')
-        utils.pretrain(model,5,2048,'pretrain1_result0.txt',toffset)
-    model.load_weights("pretrain-pr.h5")
+        utils.pretrain(model,TRAINING,2048,'pretrain1_result0.txt',toffset)
+    else:
     #train
-    model=Model(inputs=[inp,add_inp],outputs=real_out)
-    model.compile(optimizer='adam',loss='categorical_crossentropy')
-    model=utils.train(model,15,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
-    model=Model(inputs=model_input,outputs=pretrain_out)
-    model.compile(optimizer='adam',loss='categorical_crossentropy')
+        model.load_weights("pretrain1-pr.h5")
+        model=Model(inputs=[inp,add_inp],outputs=real_out)
+        model.compile(optimizer='adam',loss='categorical_crossentropy')
+        model=utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
-    model=load_model('pretrain-shallow.h5')
-    print(' '.join(utils.test(model,False)))
+    min_loss=1000
+    min_pos=-1
+    for i in range(1,10):
+        model=load_model('pretrain1_%d.h5'%i)
+        ans=utils.test(model,True)
+        print(' '.join(ans))
+        if(float(ans[3])<min_loss):
+            min_loss=float(ans[3])
+            min_pos=i
+        os.system('cp pretrain1_%d.h5 pretrain1.h5'%min_pos)
