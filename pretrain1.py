@@ -40,7 +40,7 @@ if(TRAINING):
     pre_dense=get_out(inp)
     real_dense=get_out(add_inp)
     pre_out=Dense(2,activation='softmax')(pre_dense)
-    real_out=Dense(2,activation='softmax')(Concatenate([pre_dense,real_dense]))
+    real_out=Dense(2,activation='softmax')(Concatenate()([pre_dense,real_dense]))
     model=Model(inputs=inp,outputs=pre_out)
     if(os.path.isfile('pretrain1-pr.h5')==False):
     #pre-train
