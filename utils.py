@@ -74,7 +74,7 @@ def maker():
     tester.close()
     '''
             
-def pretrain(model,epoch,batch_size,foutname,offset):
+def pretrain(default_model,epoch,batch_size,foutname,offset):
     start_time=time.time()
     model=None
     model_name=(foutname+'_pr_'+str(epoch)+'.h5')
