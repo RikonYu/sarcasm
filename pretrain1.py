@@ -23,7 +23,7 @@ def get_out(inp):
     flat1=Flatten()(pool1)
     flat2=Flatten()(pool2)
     flat3=Flatten()(pool3)
-    conc=Concatenate([flat1,flat2,flat3])
+    conc=Concatenate()([flat1,flat2,flat3])
     dense=Dense(256,activation='relu')(conc)
     return dense
 if(TRAINING):
