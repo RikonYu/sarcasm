@@ -77,7 +77,7 @@ def maker():
 def pretrain(model,epoch,batch_size,foutname,offset):
     start_time=time.time()
     model=None
-    model_name=(foutname+'_pr_'+str(max_epoch)+'.h5')
+    model_name=(foutname+'_pr_'+str(epoch)+'.h5')
     fsent=open('../Sentiment.csv','r',encoding='utf-8')
     fout=open('pre'+foutname,'w')
     global sent_len
