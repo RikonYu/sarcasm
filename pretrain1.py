@@ -54,13 +54,25 @@ if(TRAINING):
         model.compile(optimizer='adam',loss='categorical_crossentropy')
         model=utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
-    min_loss=1000
-    min_pos=-1
-    for i in range(1,10):
-        model=load_model('pretrain1_%d.h5'%i)
-        ans=utils.test(model,True)
-        print(' '.join(ans))
-        if(float(ans[3])<min_loss):
-            min_loss=float(ans[3])
-            min_pos=i
-        os.system('cp pretrain1_%d.h5 pretrain1.h5'%min_pos)
+    if(os.path.isfile('pretrain1-pr.h5')==False):
+        min_loss=1000
+        min_pos=-1
+        for i in range(1,10):
+            model=load_model('pretrain1_pr_%d.h5'%i)
+            ans=utils.test(model,True)
+            print(' '.join(ans))
+            if(float(ans[3])<min_loss):
+                min_loss=float(ans[3])
+                min_pos=i
+            os.system('cp pretrain1_pr_%d.h5 pretrain1-pr.h5'%min_pos)
+    else:
+        min_loss=1000
+        min_pos=-1
+        for i in range(1,10):
+            model=load_model('pretrain1_%d.h5'%i)
+            ans=utils.test(model,True)
+            print(' '.join(ans))
+            if(float(ans[3])<min_loss):
+                min_loss=float(ans[3])
+                min_pos=i
+            os.system('cp pretrain1_%d.h5 pretrain1.h5'%min_pos)
