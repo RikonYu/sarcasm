@@ -13,7 +13,6 @@ from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
-utils.set_sentlen(sent_len)
 def get_out(inp):
     conv1=Conv2D(96,(2,esize),activation='relu')(inp)
     conv2=Conv2D(96,(3,esize),activation='relu')(inp)
