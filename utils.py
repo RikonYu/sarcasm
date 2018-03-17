@@ -74,7 +74,7 @@ def maker():
     tester.close()
     '''
             
-def pretrain(model,max_epoch,batch_size,foutname,offset):
+def pretrain(model,epoch,batch_size,foutname,offset):
     start_time=time.time()
     model=None
     model_name=(foutname+'_pr_'+str(max_epoch)+'.h5')
@@ -116,8 +116,8 @@ def pretrain(model,max_epoch,batch_size,foutname,offset):
             model.save(model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
         return
-    if(max_epoch>0):
-        subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
+    if(epoch>0):
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),str(fsent.tell()),0])
         return
         
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
@@ -204,8 +204,6 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
-    else:
-        model.save(foutname+'.h5')
     #return model
 '''
 def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
