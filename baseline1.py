@@ -56,8 +56,8 @@ else:
         model=load_model('baseline1_%d.h5'%i)
         ans=utils.test(model,True)
         print(' '.join(ans))
-        if(ans[3]<min_loss):
-            min_loss=ans[3]
+        if(int(ans[3])<min_loss):
+            min_loss=int(ans[3])
             min_pos=i
     os.system('cp baseline1_%d.h5 baseline1.h5'%min_pos)
 
