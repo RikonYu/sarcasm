@@ -35,7 +35,7 @@ if(TRAINING):
         
     except:
         pass
-    inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
+    inp=Input(shape=(sent_len,esize,1),dtype='float32')
     add_inp=Input(shape=(sent_len,esize,1),dtype='float32')
     pre_dense=get_out(inp)
     real_dense=get_out(add_inp)
