@@ -45,7 +45,7 @@ if(TRAINING):
     if(os.path.isfile('pretrain1-pr.h5')==False):
     #pre-train
         model.compile(optimizer='adam',loss='categorical_crossentropy')
-        utils.pretrain(model,TRAINING,2048,'pretrain1_result0.txt',toffset)
+        utils.pretrain(model,TRAINING,2048,'pretrain1',toffset)
     else:
     #train
         model.load_weights("pretrain1-pr.h5")
