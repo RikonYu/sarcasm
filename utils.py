@@ -105,7 +105,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         if(not rdr):
             break
         row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
-        ins.append([int(row[1]),row[3]])
+        ins.append(clean_up([int(row[1]),row[3]]))
         if(len(ins)>batch_size):
             ins=clean_up(ins,sent_len)
             history=model.fit(ins[0],ins[1],epochs=1,verbose=0,validation_split=0)
