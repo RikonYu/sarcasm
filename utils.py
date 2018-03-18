@@ -264,5 +264,4 @@ def test(model,singular=True):
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         
 if __name__=='__main__':
-    ex=[]
-    print(read_embedding(ex,200))
+    maker()
