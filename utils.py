@@ -109,16 +109,16 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
-            history=model.fit(x,y,epochs=1,verbose=0,validation_split=0)
+            history=model.fit(x,y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
         if(time.time()-start_time>=1900):
             model.save(model_name)
-            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),'0'])
             return
     if(epoch>0):
-        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),str(fsent.tell()),0])
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),str(fsent.tell()),'0'])
         return
         
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
