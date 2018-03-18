@@ -61,9 +61,9 @@ def maker():
         if(not k):
             break
         testpos.append(ftest.tell())
-    pickle.dump(truepos,'truepos.txt')
-    pickle.dump(falsepos,'truepos.txt')
-    pickle.dump(testpos,'prepos.txt')
+    pickle.dump(truepos,open('truepos.txt','wb'))
+    pickle.dump(falsepos,open('truepos.txt','wb'))
+    pickle.dump(testpos,open('prepos.txt','wb'))
 def pretrain(default_model,epoch,batch_size,foutname,offset):
     start_time=time.time()
     model=None
