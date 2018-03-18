@@ -42,38 +42,28 @@ def clean_up(x,sent_len):
 def maker():
     ftrue=open('./true_context.csv','r')
     ffalse=open('./false_context.csv','r')
-    ftest=open('./test_context.csv','r')
-    treader=csv.reader(ftrue,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    freader=csv.reader(ffalse,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    testder=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-    twriter=open('./true_pickled.txt','w')
-    fwriter=open('./false_pickled.txt','w')
-    tester=open('./test_pickled.txt','w')
+    ftest=open('../Sentiment.csv','r',encoding='utf-8')
+    truepos=[0]
+    falsepos=[0]
+    testpos=[0]
     while(True):
-        try:
-            trues=next(treader)
-            falses=next(freader)
-        except:
+        k=ftrue.readline()
+        if(not k):
             break
-        tins=[True,trues[0],trues[1]]
-        fins=[False,falses[0],falses[1]]
-        tins=clean_up(tins,sent_len)
-        fins=clean_up(fins,sent_len)
-        pickle.dump(tins,twriter)
-        pickle.dump(fins,fwriter)
-    twriter.close()
-    '''
-    fwriter.close()
+        truepos.append(ftrue.tell())
     while(True):
-        try:
-            row=next(testder)
-        except:
+        k=ffalse.readline()
+        if(not k):
             break
-        ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
-        pickle.dump(ins,tester)
-    tester.close()
-    '''
-            
+        falsepos.append(ffalse.tell())
+    while(True):
+        k=ftest.readline()
+        if(not k):
+            break
+        testpos.append(ftest.tell())
+    pickle.dump(truepos,'truepos.txt')
+    pickle.dump(falsepos,'truepos.txt')
+    pickle.dump(testpos,'prepos.txt')
 def pretrain(default_model,epoch,batch_size,foutname,offset):
     start_time=time.time()
     model=None
