@@ -104,7 +104,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         rdr=fsent.readline()
         if(not rdr):
             break
-        row=next(csv.reader(rdr,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)))
+        row=next(csv.reader(rdr,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
         print(rdr,row)
         ins.append([int(row[1]),row[3]])
         if(len(ins)>batch_size):
