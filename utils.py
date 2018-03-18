@@ -107,7 +107,9 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
         ins.append(clean_up([int(row[1]),row[3]],sent_len))
         if(len(ins)>batch_size):
-            history=model.fit(ins[0],ins[1],epochs=1,verbose=0,validation_split=0)
+            x=numpy.stack([k[0] for k in ins])
+            y=numpy.stack([k[1] for k in ins])
+            history=model.fit(x,y,epochs=1,verbose=0,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
