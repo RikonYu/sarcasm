@@ -121,6 +121,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ins=[]
     ftrue=open('./true_context.csv','r')
     ffalse=open('./false_context.csv','r')
+    tplaces=pickle.load(open('./truepos.txt','rb'))
+    fplaces=pickle.load(open('./falsepos.txt','rb'))
     try:
         os.remove(testoutname)
         os.remove(foutname)
@@ -139,6 +141,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         else:
             model=default_model
             print('using blank model')
+        
     else:
         model=load_model(model_name)
         print('resume %s'%model_name)
@@ -147,7 +150,6 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     ffalse.seek(foffset)
     
     print("Start training on epoch %d"%epoch)
-    #ftest=open(testoutname,'a')
     fout=open(foutname+'.txt','a')
     while(True):
         trues=ftrue.readline()
@@ -187,60 +189,14 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
             return
             
     model.save(model_name)
-    #ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
+
     fout.close()
     ftrue.close()
     ffalse.close()
-    #ftest.close()
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
-    #return model
-'''
-def train(model,max_epoch,batch_size,foutname,testoutname,singular=True):
-    ins=[]
-    tt=time.clock()
-    ftrue=open('true_pickled.txt','rb')
-    ffalse=open('false_pickled.txt','rb')
-    try:
-        os.remove(testoutname)
-        os.remove(foutname)
-    except:
-        pass
-    global sent_len
-    for epoch in range(max_epoch):
-        ftest=open(testoutname,'a')
-        fout=open(foutname,'a')
-        while(True):
-            try:
-                trues=pickle.load(ftrue)
-                falses=pickle.load(ffalse)
-            except:
-                break
-            ins.append(trues)
-            ins.append(ffalses)
-            if(len(ins)>=batch_size and batch_size>0):
-                if(singular==False):
-                    x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ans])
-                    y=numpy.stack([k[2] for k in ans])
-                    history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
-                else:
-                    x0=numpy.stack([k[0] for k in ins])
-                    x1=numpy.stack([k[1] for k in ans])
-                    y=numpy.stack([k[2] for k in ans])
-                    history=model.fit(numpy.concatenate((x0,x1),axis=1),x2,epochs=1,verbose=2,validation_split=0)
-                fout.write(str(history.history['loss'][0]))
-                fout.write('\n')
-                ins=[]
-        print(time.clock()-tt)
-        model.save(foutname+str(epoch)+'.h5')
-        ftest.write(('epoch:%d '%epoch)+' '.join(test(model,singular))+'\n')
-        fout.close()
-        ftrue.seek(0)
-        ffalse.seek(0)
-    return model
-'''
+    
 def test(model,singular=True):
     total=0
     correct=0
