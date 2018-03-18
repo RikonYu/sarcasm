@@ -105,7 +105,6 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         if(not rdr):
             break
         row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
-        print(rdr,row)
         ins.append([int(row[1]),row[3]])
         if(len(ins)>batch_size):
             ins=clean_up(ins,sent_len)
@@ -116,7 +115,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         if(time.time()-start_time>=1900):
             model.save(model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),0])
-        return
+            return
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),str(fsent.tell()),0])
         return
