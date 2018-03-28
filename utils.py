@@ -78,8 +78,8 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
             print('found trained model %s,proceed'%model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
             return
-        elif(os.path.isfile((foutname+'_'+str(epoch+1)+'.h5'))):
-            model=load_model((foutname+'_'+str(epoch+1)+'.h5'))
+        elif(os.path.isfile((foutname+'_pr_'+str(epoch+1)+'.h5'))):
+            model=load_model((foutname+'_pr_'+str(epoch+1)+'.h5'))
             print('found latest model %s, training'%(foutname+'_'+str(epoch+1)+'.h5'))
         else:
             model=default_model
