@@ -9,7 +9,6 @@ from keras.optimizers import Adam
 TRAINING=1
 esize=300
 sent_len=540
-utils.set_sentlen(sent_len)
 def forward(inp):
     conv1=Conv2D(256,(3,1),activation='sigmoid',padding='valid',input_shape=(sent_len,esize,1))(inp)
     conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
@@ -27,7 +26,7 @@ if(TRAINING):
         toffset=int(sys.argv[2])
         foffset=int(sys.argv[3])
     model.compile(loss='categorical_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
-    utils.train(model,8,2048,'baseline2','baseline2-test.txt',True,toffset,foffset)
+    utils.train(model,TRAINING,2048,'baseline2','baseline2-test.txt',True,toffset,foffset)
 else:
     min_loss=1000
     min_pos=-1
