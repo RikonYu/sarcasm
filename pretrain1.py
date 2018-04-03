@@ -69,6 +69,7 @@ else:
         min_pos=-1
         for i in range(1,10):
             model=load_model('pretrain1_%d.h5'%i)
+            if(model):print('loaded %d'%i)
             ans=utils.test(model,False)
             print(' '.join(ans))
             if(float(ans[3])<min_loss):
