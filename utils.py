@@ -213,7 +213,7 @@ def test(model,singular=True):
         if(singular==True):
             ans=model.predict(numpy.concatenate(([ins[0]],[ins[1]]),axis=1))
         else:
-            ans=model.predict([[ins[0]],[ins[1]]])
+            ans=model.predict([numpy.array([ins[0]]),numpy.array([ins[1]])])
         loss-=numpy.log2(ans[0][1])
         correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
         total+=1
