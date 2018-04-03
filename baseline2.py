@@ -2,6 +2,7 @@ import numpy
 import re
 import utils
 import gensim
+import os,sys
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Input
