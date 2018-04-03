@@ -21,6 +21,8 @@ def forward(inp):
 if(TRAINING):
     KTF.clear_session()
     inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
+    out=forward(inp)
+    model=Model(inputs=inp,outputs=out)
     toffset=0
     foffset=0
     if(len(sys.argv)>2):
