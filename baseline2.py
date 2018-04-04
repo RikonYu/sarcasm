@@ -7,7 +7,7 @@ from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Input
 from keras.optimizers import Adam
-TRAINING=int(sys.argv([1]))
+TRAINING=int(sys.argv[1])
 esize=300
 sent_len=540
 def forward(inp):
