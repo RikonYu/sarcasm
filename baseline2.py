@@ -17,7 +17,7 @@ def forward(inp):
     #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
     #conv2=Reshape((sent_len*2-2,256))(conv1)
     conv2=Dropout(0.25)(conv2)
-    lstm1=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',return_sequences=True,drouput=0.5)(conv2)
+    lstm1=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',return_sequences=True,dropout=0.5)(conv2)
     lstm2=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',dropout=0.5)(lstm1)
 
     #raise Exception
