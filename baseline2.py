@@ -11,7 +11,7 @@ TRAINING=int(sys.argv[1])
 esize=300
 sent_len=540
 def forward(inp):
-    conv1=Conv2D(256,(3,esize),activation='relu',padding='valid',input_shape=(sent_len,esize,1))(inp)
+    conv1=Conv2D(256,(3,esize),activation='relu',padding='valid',input_shape=(sent_len*2,esize,1))(inp)
     #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
     conv2=Reshape((sent_len*2-2,256))(conv1)
     
