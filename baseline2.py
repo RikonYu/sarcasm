@@ -12,15 +12,15 @@ esize=300
 sent_len=540
 def forward(inp):
     real_inp=Reshape((sent_len*2,esize))(inp)
-    conv1=Conv1D(256,3,activation='relu',padding='valid')(real_inp)
-    conv2=Conv1D(256,3,activation='relu',padding='valid')(conv1)
+    conv1=Conv1D(256,3,activation='sigmoid',padding='valid')(real_inp)
+    conv2=Conv1D(256,3,activation='sigmoid',padding='valid')(conv1)
     #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
     #conv2=Reshape((sent_len*2-2,256))(conv1)
-    lstm1=LSTM(256,activation='relu',return_sequences=True)(conv2)
-    lstm2=LSTM(256,activation='relu')(lstm1)
+    lstm1=LSTM(256,activation='sigmoid',return_sequences=True)(conv2)
+    lstm2=LSTM(256,activation='sigmoid')(lstm1)
 
     #raise Exception
-    dense=Dense(256,activation='relu')(lstm2)
+    dense=Dense(256,activation='sigmoid')(lstm2)
     out=Dense(2,activation='softmax')(dense)
     return out
 if(TRAINING):
