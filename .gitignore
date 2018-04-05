@@ -6,4 +6,4 @@ false_pickled.txt
 false_pickled.txt
 sarcasm.rar
 baseline1_10.h5
-*.pyc
+./__pycache__/*.*
