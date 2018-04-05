@@ -16,7 +16,7 @@ def forward(inp):
     conv2=Reshape((sent_len*2-2,256))(conv1)
     
     lstm1=LSTM(256,activation='relu',return_sequences=True)(conv2)
-    lstm2=LSTM(256,activation='relu')(lstm1)
+    lstm2=LSTM(256,activation='relu',go_backwards=True)(lstm1)
     dense=Dense(256,activation='relu')(lstm2)
     out=Dense(2,activation='softmax')(dense)
     return out
