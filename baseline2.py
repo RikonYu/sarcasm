@@ -12,8 +12,8 @@ esize=300
 sent_len=540
 def forward(inp):
     conv1=Conv2D(256,(3,esize),activation='sigmoid',padding='valid',input_shape=(sent_len,esize,1))(inp)
-    conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
-    conv2=Reshape((sent_len*2-3,256))(conv2)
+    #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
+    conv2=Reshape((sent_len*2-2,256))(conv1)
     
     lstm1=LSTM(256,activation='sigmoid',return_sequences=True)(conv2)
     lstm2=LSTM(256,activation='sigmoid')(lstm1)
