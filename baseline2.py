@@ -5,6 +5,7 @@ import gensim
 import os,sys
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
+from keras.layers.convolutional import Convolution1D, MaxPooling1D
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Input, Conv1D
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
@@ -12,16 +13,17 @@ esize=300
 sent_len=540
 def forward(inp):
     real_inp=Reshape((sent_len*2,esize))(inp)
-    conv1=Conv1D(256,3,activation='sigmoid',padding='valid',kernel_initializer='he_normal')(real_inp)
-    conv2=Conv1D(256,3,activation='sigmoid',padding='valid',kernel_initializer='he_normal')(conv1)
+    #real_inp=KTF.permute_dimensions(real_inp,(0,2,1))
+    conv1=Convolution1D(256,3,activation='sigmoid',padding='valid',kernel_initializer='he_normal',input_shape=(1,sent_len*2))(real_inp)
+    conv2=Convolution1D(256,3,activation='sigmoid',padding='valid',kernel_initializer='he_normal',input_shape=(1,sent_len*2-2))(conv1)
     #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
     #conv2=Reshape((sent_len*2-2,256))(conv1)
     conv2=Dropout(0.25)(conv2)
     lstm1=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',return_sequences=True,dropout=0.5)(conv2)
     lstm2=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',dropout=0.5)(lstm1)
-
+    raise Exception
     #raise Exception
-    dense=Dense(256,activation='sigmoid')(lstm2)
+    dense=Dense(256,activation='sigmoid',kernel_initializer='he_normal')(lstm2)
     out=Dense(2,activation='softmax')(dense)
     return out
 if(TRAINING):
