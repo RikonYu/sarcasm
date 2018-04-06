@@ -48,10 +48,10 @@ if(TRAINING):
         utils.pretrain(model,TRAINING,2048,'pretrain1',toffset)
     else:
     #train
-        model.load_weights("pretrain1-pr.h5")
         model=Model(inputs=[inp,add_inp],outputs=real_out)
         model.compile(optimizer='adam',loss='categorical_crossentropy')
-        model=utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
+        model.load_weights("pretrain1-pr.h5",by_name=True)
+        utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
     if(os.path.isfile('pretrain1-pr.h5')==False):
         min_loss=1000

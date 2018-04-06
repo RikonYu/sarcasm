@@ -104,7 +104,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
             fout.write('\n')
             ins=[]
         if(time.time()-start_time>=1900):
-            model.save(model_name)
+            model.save(model_name,overwrite=True)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),'0'])
             return
     if(epoch>0):
