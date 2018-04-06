@@ -23,7 +23,7 @@ def forward(inp):
     pool2=MaxPooling2D((2,1))(conv2)
     flat1=Flatten()(pool2)
     dense1=Dense(100,activation='relu')(flat1)
-if(TRIANING):
+if(TRAINING):
     KTF.clear_session()
     main_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     sent_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
