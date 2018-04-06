@@ -28,7 +28,7 @@ if(TRAINING):
     main_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     sent_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     #main_out=forward(main_inp)
-    sent_out=forward(sent)
+    sent_out=forward(sent_inp)
     main_out=forward(main_inp)
     sent_res=Dense(2,activation='softmax')(sent_out)
     out=Concatenate()([main_out,sent_out])
