@@ -21,7 +21,6 @@ def forward(inp):
     conv2=Dropout(0.25)(conv2)
     lstm1=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',return_sequences=True,dropout=0.5)(conv2)
     lstm2=LSTM(256,activation='sigmoid',kernel_initializer='he_normal',dropout=0.5)(lstm1)
-    raise Exception
     #raise Exception
     dense=Dense(256,activation='sigmoid',kernel_initializer='he_normal')(lstm2)
     out=Dense(2,activation='softmax')(dense)
