@@ -49,4 +49,27 @@ if(TRIANING):
         model.load_weight('baseline3-pr.h5',by_name=True)
         utils.train(model,TRAINING,2048,'baseline3','baseline3-test.txt',False,toffset,foffset)
 else:
-    pass
+    if(os.path.isfile('baseline3-pr.h5')==False):
+        ind=1
+        best=1000
+        bpos=-1
+        while(os.path.isfile('baseline3_pr_%d.h5'%ind)==True):
+            model=load_model('baseline3_pr_%d.h5'%ind)
+            ans=utils.test(model,singular=True)[1]
+            if(ans>best):
+                best=ans
+                bpos=ind
+            ind+=1
+        os.system('cp baseline3_pr_%d.h5 baseline3-pr.h5'%min_pos)
+    else:
+        ind=1
+        best=1000
+        bpos=-1
+        while(os.path.isfile('baseline3_%d.h5'%ind)==True):
+            model=load_model('baseline3_%d.h5'%ind)
+            ans=utils.test(model,singular=True)[1]
+            if(ans>best):
+                best=ans
+                bpos=ind
+            ind+=1
+        os.system('cp baseline3_%d.h5 baseline3.h5'%min_pos)
