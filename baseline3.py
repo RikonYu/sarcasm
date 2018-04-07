@@ -45,7 +45,7 @@ if(TRAINING):
         #pretrain
         model=Model(inputs=sent_inp,outputs=sent_res)
         model.compile(optimizer='adam',loss='categorical_crossentropy')
-        utils.pretrain(model,TRAINING,2048,'baseline3',toffset)
+        utils.pretrain(model,TRAINING,2048,'baseline3',toffset,double=True)
     else:
         model=Model(inputs=[main_inp,sent_inp],outputs=out)
         model.compile(optimizer='adam',loss='categorical_crossentropy')

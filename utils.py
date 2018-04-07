@@ -64,7 +64,7 @@ def maker():
     pickle.dump(truepos,open('truepos.txt','wb'))
     pickle.dump(falsepos,open('falsepos.txt','wb'))
     pickle.dump(testpos,open('prepos.txt','wb'))
-def pretrain(default_model,epoch,batch_size,foutname,offset,singular=False):
+def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
     start_time=time.time()
     model=None
     model_name=(foutname+'_pr_'+str(epoch)+'.h5')
