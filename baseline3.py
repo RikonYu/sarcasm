@@ -23,7 +23,7 @@ def forward(inp):
     pool2=MaxPooling2D((2,1))(conv2)
     flat1=Flatten()(pool2)
     dense1=Dense(100,activation='relu')(flat1)
-    dense1=Dropout(0.25)
+    dense1=Dropout(0.25)(dense1)
     return dense1
 if(TRAINING):
     KTF.clear_session()
