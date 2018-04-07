@@ -162,8 +162,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     if(toffset==0):
         tposfile=open('truepos.txt','wb')
         fposfile=open('falsepos.txt','wb')
-        numpy.shuffle(tpos)
-        numpy.shuffle(fpos)
+        numpy.random.shuffle(tpos)
+        numpy.random.shuffle(fpos)
         pickle.dump(tpos,tposfile)
         pickle.dump(fpos,fposfile)
         
