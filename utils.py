@@ -64,7 +64,7 @@ def maker():
     pickle.dump(truepos,open('truepos.txt','wb'))
     pickle.dump(falsepos,open('falsepos.txt','wb'))
     pickle.dump(testpos,open('prepos.txt','wb'))
-def pretrain(default_model,epoch,batch_size,foutname,offset):
+def pretrain(default_model,epoch,batch_size,foutname,offset,singular=False):
     start_time=time.time()
     model=None
     model_name=(foutname+'_pr_'+str(epoch)+'.h5')
@@ -95,7 +95,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset):
         if(not rdr):
             break
         row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
-        ins.append(clean_up([int(row[1]),row[3]],sent_len))
+        ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(singular))))
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
