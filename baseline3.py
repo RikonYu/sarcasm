@@ -17,7 +17,7 @@ esize=300
 def forward(inp):
     conv1_1=Conv2D(50,(4,1),activation='relu',padding='valid')(inp)
     conv1_2=Conv2D(50,(5,1),activation='relu',padding='valid')(inp)
-    conv1=Concatenate()([conv1_1,conv1_2])
+    conv1=Concatenate(axis=1)([conv1_1,conv1_2])
     pool1=MaxPooling2D((2,1))(conv1)
     conv2=Conv2D(100,(3,1),activation='relu',padding='valid')(pool1)
     pool2=MaxPooling2D((2,1))(conv2)
@@ -31,7 +31,7 @@ if(TRAINING):
     sent_out=forward(sent_inp)
     main_out=forward(main_inp)
     sent_res=Dense(2,activation='softmax')(sent_out)
-    out=Concatenate(axis=1)([main_out,sent_out])
+    out=Concatenate()([main_out,sent_out])
     out=Dense(2,activation='softmax')(out)
     toffset=0
     foffset=0
