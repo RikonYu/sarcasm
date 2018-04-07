@@ -31,7 +31,7 @@ if(TRAINING):
     sent_out=forward(sent_inp)
     main_out=forward(main_inp)
     sent_res=Dense(2,activation='softmax')(sent_out)
-    out=Concatenate()([main_out,sent_out])
+    out=Concatenate(axis=1)([main_out,sent_out])
     out=Dense(2,activation='softmax')(out)
     toffset=0
     foffset=0
