@@ -45,12 +45,12 @@ if(TRAINING):
         #pretrain
         model=Model(inputs=sent_inp,outputs=sent_res)
         model.compile(optimizer='adam',loss='categorical_crossentropy')
-        utils.pretrain(model,TRAINING,2048,'baseline3',toffset,double=True)
+        utils.pretrain(model,TRAINING,512,'baseline3',toffset,double=True)
     else:
         model=Model(inputs=[main_inp,sent_inp],outputs=out)
         model.compile(optimizer='adam',loss='categorical_crossentropy')
         model.load_weight('baseline3-pr.h5',by_name=True)
-        utils.train(model,TRAINING,2048,'baseline3','baseline3-test.txt',True,toffset,foffset)
+        utils.train(model,TRAINING,512,'baseline3','baseline3-test.txt',True,toffset,foffset)
 else:
     if(os.path.isfile('baseline3-pr.h5')==False):
         ind=1

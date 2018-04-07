@@ -107,7 +107,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
-            history=model.fit(x,y,epochs=1,verbose=0,validation_split=0)
+            history=model.fit(x,y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
