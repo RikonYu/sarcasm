@@ -95,7 +95,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         if(not rdr):
             break
         row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
-        ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(singular))))
+        ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(double))))
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
