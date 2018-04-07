@@ -166,6 +166,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         numpy.shuffle(fpos)
         pickle.dump(tpos,tposfile)
         pickle.dump(fpos,fposfile)
+        
         tposfile.close()
         fposfile.close()
     #ftrue.seek(toffset)
