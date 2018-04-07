@@ -18,6 +18,14 @@ esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
 sent_len=540
 
+def getline(fin,offset):
+    fin.seek(offset)
+    k=fin.readline()
+    if(not k):
+        return -1
+    row=next(csv.reader([k],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
+    return k
+
 def read_embedding(words,sent_len):
     X=list(filter(lambda i: i in embedding_model.vocab,words))
     if(X==[]):
@@ -145,13 +153,24 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     else:
         model=load_model(model_name)
         print('resume %s'%model_name)
-        
-    ftrue.seek(toffset)
-    ffalse.seek(foffset)
+    tposfile=open('truepos.txt','rwb')
+    fposfile=open('falsepos.txt','rwb')
+    tpos=pickle.load(tposfile)
+    fpos=pickle.load(fposfile)
+    if(toffset==0):
+        numpy.shuffle(tpos)
+        numpy.shuffle(fpos)
+        pickle.dump(tpos,tposfile)
+        pickle.dump(fpos,fposfile)
+    tposfile.close()
+    fposfile.close()
+    #ftrue.seek(toffset)
+    #ffalse.seek(foffset)
     
     print("Start training on epoch %d"%epoch)
     fout=open(foutname+'.txt','a')
-    while(True):
+    for i in range(toffset,len(tpos)):
+        '''
         trues=ftrue.readline()
         falses=ffalse.readline()
         if(not trues):
@@ -162,7 +181,9 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
         trues=next(tr)
         falses=next(fr)
-            
+        '''
+        trues=getline(ftrue,tpos[i])
+        falses=getline(ffalse,fpos[i])
         tins=[True,trues[0],trues[1]]
         fins=[False,falses[0],falses[1]]
         tins=clean_up(tins,sent_len)
@@ -185,7 +206,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
             ins=[]
         if(time.time()-start_time>=1900):
             model.save(model_name)
-            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(ftrue.tell()),str(ffalse.tell())])
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(i),str(i)])
             return
             
     model.save(model_name)
@@ -221,3 +242,4 @@ def test(model,singular=True):
         
 if __name__=='__main__':
     maker()
+    #pass
