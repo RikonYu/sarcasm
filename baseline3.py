@@ -23,6 +23,8 @@ def forward(inp):
     pool2=MaxPooling2D((2,1))(conv2)
     flat1=Flatten()(pool2)
     dense1=Dense(100,activation='relu')(flat1)
+    dense1=Dropout(0.25)
+    return dense1
 if(TRAINING):
     KTF.clear_session()
     main_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
@@ -35,6 +37,7 @@ if(TRAINING):
     out=Dense(2,activation='softmax')(out)
     toffset=0
     foffset=0
+    #raise Exception
     if(len(sys.argv)>2):
         toffset=int(sys.argv[2])
         foffset=int(sys.argv[3])

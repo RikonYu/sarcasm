@@ -25,6 +25,7 @@ def get_out(inp):
     flat3=Flatten()(pool3)
     conc=Concatenate()([flat1,flat2,flat3])
     dense=Dense(256,activation='relu')(conc)
+    dense=Dropout(0.5)(dense)
     return dense
 if(TRAINING):
     toffset=0
