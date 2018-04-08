@@ -95,14 +95,14 @@ def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
     else:
         model=load_model(model_name)
         print('resume %s'%model_name)
-    fsent.seek(offset)
+    #fsent.seek(offset)
+    posfile=open('prepos.txt','rb')
+    prepos=pickle.load(posfile)[1:]
+    posfile.close()
     if(offset==0):
-        fsent.readline()
-    while(True):
-        rdr=fsent.readline()
-        if(not rdr):
-            break
-        row=next(csv.reader([rdr],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL))
+        numpy.random.shuffle(prepos)
+    for i in prange(offset,len(prepos)):
+        row=getline(fsent,prepos[i])
         ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(double))))
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
@@ -155,8 +155,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         print('resume %s'%model_name)
     tposfile=open('truepos.txt','rb')
     fposfile=open('falsepos.txt','rb')
-    tpos=pickle.load(tposfile)
-    fpos=pickle.load(fposfile)
+    tpos=pickle.load(tposfile)[:-1]
+    fpos=pickle.load(fposfile)[:-1]
     tposfile.close()
     fposfile.close()
     if(toffset==0):
@@ -168,9 +168,6 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
         #pickle.dump(fpos,fposfile)
         #tposfile.close()
         #fposfile.close()
-    #ftrue.seek(toffset)
-    #ffalse.seek(foffset)
-    
     print("Start training on epoch %d"%epoch)
     fout=open(foutname+'.txt','a')
     for i in range(toffset,len(tpos)):
