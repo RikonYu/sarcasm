@@ -101,7 +101,7 @@ def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
     posfile.close()
     if(offset==0):
         numpy.random.shuffle(prepos)
-    for i in prange(offset,len(prepos)):
+    for i in range(offset,len(prepos)):
         row=getline(fsent,prepos[i])
         ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(double))))
         if(len(ins)>=batch_size):
