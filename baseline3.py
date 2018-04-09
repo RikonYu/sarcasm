@@ -20,7 +20,7 @@ def forward(inp):
     conv1=Concatenate(axis=1)([conv1_1,conv1_2])
     pool1=MaxPooling2D((2,1))(conv1)
     conv2=Conv2D(100,(3,1),activation='relu',padding='valid')(pool1)
-    pool2=MaxPooling2D((2,1))(conv2)
+    pool2=MaxPooling2D((2,esize))(conv2)
     flat1=Flatten()(pool2)
     dense1=Dense(100,activation='relu')(flat1)
     dense1=Dropout(0.25)(dense1)
