@@ -45,12 +45,12 @@ if(TRAINING):
     model=Model(inputs=inp,outputs=pre_out)
     if(os.path.isfile('pretrain1-pr.h5')==False):
     #pre-train
-        model.compile(optimizer='adam',loss='categorical_crossentropy')
+        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         utils.pretrain(model,TRAINING,2048,'pretrain1',toffset)
     else:
     #train
         model=Model(inputs=[inp,add_inp],outputs=real_out)
-        model.compile(optimizer='adam',loss='categorical_crossentropy')
+        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         model.load_weights("pretrain1-pr.h5",by_name=True)
         utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:

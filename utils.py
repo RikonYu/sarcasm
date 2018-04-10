@@ -197,7 +197,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
                 x0=numpy.stack([k[0] for k in ins])
                 x1=numpy.stack([k[1] for k in ins])
                 y=numpy.stack([k[2] for k in ins])
-                history=model.fit([x0,x1],y,epochs=1,verbose=0,validation_split=0)
+                history=model.fit([x0,x1],y,epochs=1,verbose=2,validation_split=0)
             else:
                 x0=numpy.stack([k[0] for k in ins])
                 x1=numpy.stack([k[1] for k in ins])
@@ -234,11 +234,11 @@ def test(model,singular=True):
             break
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         if(singular==True):
-            ans=model.predict(numpy.concatenate(([ins[0]],[ins[1]]),axis=1))
+            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),ins[2])
         else:
-            ans=model.predict([numpy.array([ins[0]]),numpy.array([ins[1]])])
-        loss-=numpy.log2(ans[0][1])
-        correct+=int(numpy.argmax(ans,axis=1)[0]==int(row[2]))
+            ans=model.evaluate([numpy.array(ins[0]),numpy.array(ins[1])],ins[2])
+        loss+=ans[0]
+        correct+=ans[1]
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
         

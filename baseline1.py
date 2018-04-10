@@ -30,7 +30,7 @@ if(TRAINING):
     dense=Dense(256,activation='relu')(conc)
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
-    model.compile(optimizer='adam',loss='categorical_crossentropy')
+    model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
     toffset=0
     foffset=0
     if(len(sys.argv)>2):
