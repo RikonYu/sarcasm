@@ -234,9 +234,9 @@ def test(model,singular=True):
             break
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         if(singular==True):
-            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),[1-ins[2][0],ins[2][0]])
+            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),ins[2][0])
         else:
-            ans=model.evaluate([numpy.array(ins[0]),numpy.array(ins[1])],[1-ins[2][0],ins[2][0]])
+            ans=model.evaluate([numpy.array(ins[0]),numpy.array(ins[1])],ins[2][0])
         loss+=ans[0]
         correct+=ans[1]
         total+=1
