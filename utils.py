@@ -233,8 +233,8 @@ def test(model,singular=True):
         except:
             break
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
+        print(int(row[2]),numpy.concatenate(([ins[0]],[ins[1]]),axis=1).shape,numpy.array([1-int(row[2]),int(row[2])]).shape)
         if(singular==True):
-            print(int(row[2]),numpy.concatenate(([ins[0]],[ins[1]]),axis=1).shape,numpy.array([1-int(row[2]),int(row[2])]).shape)
             ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),[1-int(row[2]),int(row[2])])
         else:
             ans=model.evaluate([numpy.array([ins[0]]),numpy.array([ins[1]])],[1-int(row[2]),int(row[2])])
