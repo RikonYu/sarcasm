@@ -54,6 +54,7 @@ else:
     min_pos=-1
     for i in range(1,10):
         model=load_model('baseline1_%d.h5'%i)
+        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         ans=utils.test(model,True)
         print(' '.join(ans))
         if(float(ans[3])<min_loss):
