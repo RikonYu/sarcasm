@@ -7,7 +7,7 @@ import csv
 import gc
 import time
 import subprocess
-import keras.utils.to_categorical as categ
+from keras.utils import to_categorical as categ
 from keras.models import load_model
 import os
 import tensorflow as tf
