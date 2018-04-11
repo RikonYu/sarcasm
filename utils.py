@@ -236,7 +236,7 @@ def test(model,singular=True):
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         #print(int(row[2]),numpy.concatenate(([ins[0]],[ins[1]]),axis=1).shape,numpy.array([1-int(row[2]),int(row[2])]).shape)
         if(singular==True):
-            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),numpy.array([1-int(row[2]),int(row[2])]),verbose=0)
+            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),categ([int(row[2])],2),verbose=0)
         else:
             ans=model.evaluate([numpy.array([ins[0]]),numpy.array([ins[1]])],categ([int(row[2])],2),verbose=0)
         loss+=ans[0]

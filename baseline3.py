@@ -28,9 +28,9 @@ def forward(inp):
 if(TRAINING):
     KTF.clear_session()
     main_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
-    sent_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
+    #sent_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
     #main_out=forward(main_inp)
-    sent_out=forward(sent_inp)
+    sent_out=forward(main_inp)
     main_out=forward(main_inp)
     sent_res=Dense(2,activation='softmax')(sent_out)
     out=Concatenate()([main_out,sent_out])
@@ -43,14 +43,14 @@ if(TRAINING):
         foffset=int(sys.argv[3])
     if(os.path.isfile('baseline3-pr.h5')==False):
         #pretrain
-        model=Model(inputs=sent_inp,outputs=sent_res)
+        model=Model(inputs=main_inp,outputs=sent_res)
         model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         utils.pretrain(model,TRAINING,512,'baseline3',toffset,double=True)
     else:
-        model=Model(inputs=[main_inp,sent_inp],outputs=out)
+        model=Model(inputs=main_inp,outputs=out)
         model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         model.load_weights('baseline3-pr.h5',by_name=True)
-        utils.train(model,TRAINING,512,'baseline3','baseline3-test.txt',False,toffset,foffset)
+        utils.train(model,TRAINING,512,'baseline3','baseline3-test.txt',True,toffset,foffset)
 else:
     if(os.path.isfile('baseline3-pr.h5')==False):
         ind=1
