@@ -7,6 +7,7 @@ import csv
 import gc
 import time
 import subprocess
+import keras.utils.np_utils.to_categorical as categ
 from keras.models import load_model
 import os
 import tensorflow as tf
@@ -237,7 +238,7 @@ def test(model,singular=True):
         if(singular==True):
             ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),numpy.array([1-int(row[2]),int(row[2])]))
         else:
-            ans=model.evaluate([numpy.array(ins[0]),numpy.array(ins[1])],1)
+            ans=model.evaluate([numpy.array([ins[0]]),numpy.array([ins[1]])],categ([int(row[2])],2))
         loss+=ans[0]
         correct+=ans[1]
         total+=1
