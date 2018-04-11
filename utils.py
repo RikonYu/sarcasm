@@ -237,7 +237,7 @@ def test(model,singular=True):
         if(singular==True):
             ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),numpy.array([1-int(row[2]),int(row[2])]))
         else:
-            ans=model.evaluate([ins[0],ins[1]],1)
+            ans=model.evaluate([[ins[0]],[ins[1]]],1)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
