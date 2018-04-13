@@ -24,6 +24,7 @@ def get_out(inp):
     flat2=Flatten()(pool2)
     flat3=Flatten()(pool3)
     conc=Concatenate()([flat1,flat2,flat3])
+    conc=Dropout(0.25)(conc)
     dense=Dense(256,activation='relu')(conc)
     dense=Dropout(0.5)(dense)
     return dense
