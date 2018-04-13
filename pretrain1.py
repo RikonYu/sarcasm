@@ -6,7 +6,7 @@ import gensim
 import keras
 import utils
 from keras.models import Sequential, Model, load_model
-from keras.layers import Input,Concatenate
+from keras.layers import Input,Concatenate,Layer
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
 from keras.optimizers import Adam
 
