@@ -173,26 +173,16 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     print("Start training on epoch %d"%epoch)
     fout=open(foutname+'.txt','a')
     for i in range(toffset,len(tpos)):
-        '''
-        trues=ftrue.readline()
-        falses=ffalse.readline()
-        if(not trues):
-            break
-        if(not falses):
-            break
-        tr=csv.reader([trues],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        fr=csv.reader([falses],delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
-        trues=next(tr)
-        falses=next(fr)
-        '''
         trues=getline(ftrue,tpos[i])
         falses=getline(ffalse,fpos[i])
-        tins=[True,trues[0],trues[1]]
-        fins=[False,falses[0],falses[1]]
-        tins=clean_up(tins,sent_len)
-        fins=clean_up(fins,sent_len)
-        ins.append(tins)
-        ins.append(fins)
+        if(trues[0]!=''):
+            tins=[True,trues[0],trues[1]]
+            tins=clean_up(tins,sent_len)
+            ins.append(tins)
+        if(falses[0]!=''):
+            fins=[False,falses[0],falses[1]]
+            fins=clean_up(fins,sent_len)
+            ins.append(fins)
         if(len(ins)>=batch_size and batch_size>0):
             if(singular==False):
                 x0=numpy.stack([k[0] for k in ins])
@@ -233,6 +223,8 @@ def test(model,singular=True):
             row=next(treader)
         except:
             break
+        if(row[0]==''):
+            continue
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         #print(int(row[2]),numpy.concatenate(([ins[0]],[ins[1]]),axis=1).shape,numpy.array([1-int(row[2]),int(row[2])]).shape)
         if(singular==True):
