@@ -29,7 +29,7 @@ if(TRAINING):
     conc=Concatenate()([flat1,flat2,flat3])
     conc=Dropout(0.25)(conc)
     dense=Dense(256,activation='relu')(conc)
-    dense.Dropout(0.5)(dense)
+    dense=Dropout(0.5)(dense)
     out=Dense(2,activation='softmax')(dense)
     model=Model(inputs=inp,outputs=out)
     model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
