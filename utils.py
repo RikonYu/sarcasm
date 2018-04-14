@@ -33,7 +33,7 @@ def prepare_pos():
     pos_dict['#']=ks
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
-    ans=numpy.array([numpy.eye(pos_dict[i])[pos_dict[i]-1] for _,i in ans])
+    ans=numpy.array([numpy.eye(pos_dict[i]+1)[pos_dict[i]] for _,i in ans])
     return numpy.resize(ans,[sent_len,len(pos_dict),1])
         
 def getline(fin,offset):
