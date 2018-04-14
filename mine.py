@@ -154,9 +154,9 @@ if(TRAINING):
         pass
     KTF.clear_session()
     left_inp=Input(shape=(sent_len,esize,1),dtype='float32')
-    left_pos=Input(shape=(sent_len,45,1),dtype='float32')
+    left_pos=Input(shape=(sent_len,46,1),dtype='float32')
     right_inp=Input(shape=(sent_len,esize,1),dtype='float32')
-    right_pos=Input(shape=(sent_len,45,1),dtype='float32')
+    right_pos=Input(shape=(sent_len,46,1),dtype='float32')
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
