@@ -161,12 +161,12 @@ if(TRAINING):
     right_out=forward(right_inp,right_pos)
     
     if(os.path.isfile('mine-pr.h5')==False):
-        predense=Dense(2,activation='relu')(Concatenate()(left_out[0],left_out[1]))
+        predense=Dense(2,activation='relu')(Concatenate()([left_out[0],left_out[1]]))
         model=Model(inputs=[left_inp,left_pos],outputs=left_out)
         model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
         utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
     else:
-        realdense=Dense(2,activation='relu')(Concatenate()(left_out[0],left_out[1],right_out[0],right_out[1]))
+        realdense=Dense(2,activation='relu')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
         model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
         model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
         model.load_weights('mine-pr.h5',by_name=True)
