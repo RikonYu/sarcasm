@@ -162,7 +162,7 @@ if(TRAINING):
     
     if(os.path.isfile('mine-pr.h5')==False):
         predense=Dense(2,activation='relu')(Concatenate()([left_out[0],left_out[1]]))
-        model=Model(inputs=[left_inp,left_pos],outputs=left_out)
+        model=Model(inputs=[left_inp,left_pos],outputs=predense)
         model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
         utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
     else:
