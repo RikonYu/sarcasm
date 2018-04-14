@@ -173,7 +173,7 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
-            print(pos)
+            print(numpy.array(pos).shape)
             history=model.fit([x,numpy.array(pos)],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
