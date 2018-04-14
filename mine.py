@@ -107,9 +107,29 @@ class Attention(Layer):
     def compute_output_shape(self, input_shape):
         #return input_shape[0], input_shape[-1]
         return input_shape[0],  self.features_dim
+pos_oh={}
+def get_pos(sent):
+    ans=ntlk.pos_tag(sent)
+    return [pos_oh[i] for i,_ in ans]
 
-def forward(inp):
-    pos=nltk.pos_tag(inp)
-    print(pos)
-forward('all your base are belong to us'.split())
-
+esize=300
+sent_len=540
+TRAINING=sys.argv[1]
+def forward(inp,pos):
+    conv_inp_1=Conv2D(128,(3,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
+    conv_inp_2=Conv2D(128,(4,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
+    conv_inp_3=Conv2D(128,(5,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
+    pool_1=MaxPooling2D((3,1))(conv_inp_1)
+    pool_2=MaxPooling2D((3,1))(conv_inp_2)
+    pool_3=MaxPooling2D((3,1))(conv_inp_3)
+    pool_inp=Concatenate(axis=1)([pool_1,pool_2,pool_3])
+    print(KTF.int_shape(pool_inp))
+    
+if(TRAINING):
+    KTF.clear_session()
+    left_inp=Input(shape=(sent_len,esize,1),dtype='float32')
+    left_pos=Input(shape=(sent_len,45,1),dtype='float32')
+    right_inp=Input(shape=(sent_len,esize,1),dtype='float32')
+    right_pos=Input(shape=(sent_len,45,1),dtype='float32')
+    forward(left_inp,left_pos)
+    

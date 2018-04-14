@@ -14,11 +14,25 @@ import tensorflow as tf
 from keras import backend as KTF
 from keras.callbacks import EarlyStopping
 import os
+import nltk
+from nltk.data import load
 embedding_model=gensim.models.KeyedVectors.load_word2vec_format('../GoogleNews-vectors-negative300.bin', binary=True)
 esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
 sent_len=540
-
+pos_dict={}
+def prepare_pos():
+    ks=0
+    global pos_dict
+    nltk.download('tagsets')
+    nltk.download('averaged_perceptron_tagger')
+    for i in load('help/tagsets/upenn_tagset.pickle').keys():
+        post_dict[i]=ks
+        ks+=1
+def read_pos(sent):
+    ans=nltk.pos_tag(sent.split())
+    return [categ(pos_dict[i]) for i,_ in ans]
+        
 def getline(fin,offset):
     fin.seek(offset)
     k=fin.readline()
