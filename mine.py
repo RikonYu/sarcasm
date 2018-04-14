@@ -140,8 +140,8 @@ class mine_model:
 word_layers=mine_model()
 pos_layers=mine_model()
 def forward(inp,pos):
-    wout=word_layers(inp)
-    pout=pos_layers(pos)
+    wout=word_layers.forward(inp)
+    pout=pos_layers.forward(pos)
     return wout,pout
 utils.prepare_pos()
 if(TRAINING):
