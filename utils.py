@@ -324,12 +324,12 @@ def mine_train(default_model,epoch,batch_size,foutname,testoutname,singular,toff
             tins=[True,trues[0],trues[1]]
             tins=clean_up(tins,sent_len)
             ins.append(tins)
-            pos.append(read_pos(tins))
+            pos.append([read_pos(trues[0]),read_pos(trues[1])])
         if(falses[0]!=''):
             fins=[False,falses[0],falses[1]]
             fins=clean_up(fins,sent_len)
             ins.append(fins)
-            pos.append(read_pos(fins))
+            pos.append([read_pos(falses[0]),read_pos(falses[1])])
         if(len(ins)>=batch_size and batch_size>0):
             if(singular==False):
                 x0=numpy.stack([k[0] for k in ins])
