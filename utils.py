@@ -32,7 +32,7 @@ def prepare_pos():
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
     ans=numpy.array([categ(pos_dict[i]) for _,i in ans])
-    return numpy.resize(ans,[sent_len,len(pos_dict)])
+    return numpy.resize(ans,[sent_len,len(pos_dict),1])
         
 def getline(fin,offset):
     fin.seek(offset)
@@ -380,6 +380,30 @@ def test(model,singular=True):
             ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),categ([int(row[2])],2),verbose=0)
         else:
             ans=model.evaluate([numpy.array([ins[0]]),numpy.array([ins[1]])],categ([int(row[2])],2),verbose=0)
+        loss+=ans[0]
+        correct+=ans[1]
+        total+=1
+    return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
+def mine_test(model,singular=False):
+    total=0
+    correct=0
+    loss=0
+    global sent_len
+    ftest=open('test_context.csv','r')
+    treader=csv.reader(ftest,delimiter=',',quotechar='|',quoting=csv.QUOTE_MINIMAL)
+    while(True):
+        try:
+            row=next(treader)
+        except:
+            break
+        if(row[0]==''):
+            continue
+        ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
+        pos=[read_pos(row[0]),read_pos(row[1])]
+        if(singular==True):
+            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),categ([int(row[2])],2),verbose=0)
+        else:
+            ans=model.evaluate([numpy.array([ins[0]]),numpy.array(pos[0]),numpy.array([ins[1]]),numpy.array(pos[1])],categ([int(row[2])],2),verbose=0)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
