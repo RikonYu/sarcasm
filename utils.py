@@ -29,6 +29,7 @@ def prepare_pos():
     for i in load('help/tagsets/upenn_tagset.pickle').keys():
         pos_dict[i]=ks
         ks+=1
+    pos_dict['#']=ks
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
     ans=numpy.array([categ(pos_dict[i]) for _,i in ans])
