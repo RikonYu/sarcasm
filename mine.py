@@ -158,7 +158,7 @@ if(TRAINING):
     right_pos=Input(shape=(sent_len,46,1),dtype='float32')
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
-    print(KFT.int_shape(left_out[0]),KFT.int_shape(left_out[1]))
+    print(KTF.int_shape(left_out[0]),KTF.int_shape(left_out[1]))
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
     realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
     if(os.path.isfile('mine-pr.h5')==False):
