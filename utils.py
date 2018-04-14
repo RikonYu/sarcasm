@@ -54,8 +54,7 @@ def read_embedding(words,sent_len):
 def clean_up(x,sent_len):
     
     if(len(x)==2):
-        y_=categ(x[0],2)
-        #[1-x[0],int(x[0])]
+        y_=[1-x[0],int(x[0])]
         x_=re.findall(r'[\w]+',x[1])
         return [numpy.array(read_embedding(x_,sent_len)).reshape((sent_len,esize,1)),y_]
     else:
@@ -180,7 +179,8 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
             print(numpy.array(pos).shape,numpy.array(x).shape,numpy.array(y).shape)
             #history=model.fit([numpy.zeros([2048,540,300,1]),numpy.zeros([2048,540,46,1])],numpy.zeros([2048,2]),epochs=1,validation_split=0)
             x=x.reshape([batch_size,sent_len,esize,1])
-            pos=numpy.array(pos).reshape([batch_size,sent_len,46,1])
+            #pos=numpy.array(pos).reshape([batch_size,sent_len,46,1])
+            pos=numpy.zeros([2048,540,46,1])
             y=numpy.array(y).reshape([batch_size,2])
             history=model.fit([x,pos],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
