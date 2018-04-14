@@ -131,10 +131,6 @@ class mine_model:
         lstm1=self.lstm1(pool_1)
         lstm2=self.lstm2(pool_2)
         lstm3=self.lstm3(pool_3)
-        print(KTF.int_shape(lstm1))
-        print(KTF.int_shape(lstm2))
-        print(KTF.int_shape(lstm3))
-        
         out=Concatenate()([lstm1,lstm2,lstm3])
         out=Dropout(0.25)(out)
         dense=self.dense(out)
@@ -145,7 +141,7 @@ pos_layers=mine_model()
 def forward(inp,pos):
     wout=word_layers.forward(inp)
     pout=pos_layers.forward(pos)
-    return wout,pout
+    return (wout,pout)
 utils.prepare_pos()
 if(TRAINING):
     toffset=0
@@ -162,6 +158,7 @@ if(TRAINING):
     right_pos=Input(shape=(sent_len,46,1),dtype='float32')
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
+    print(KFT.int_shape(left_out[0]),KFT.int_shape(left_out[1]))
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
     realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
     if(os.path.isfile('mine-pr.h5')==False):
