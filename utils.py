@@ -32,7 +32,7 @@ def prepare_pos():
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
     ans=numpy.array([categ(pos_dict[i]) for _,i in ans])
-    return numyp.resize(ans,[sent_len,len(pos_dict)])
+    return numpy.resize(ans,[sent_len,len(pos_dict)])
         
 def getline(fin,offset):
     fin.seek(offset)
@@ -174,7 +174,7 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         if(len(ins)>=batch_size):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
-            print(numpy.array(pos).shape)
+            #print(numpy.array(pos).shape)
             history=model.fit([x,numpy.array(pos)],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
