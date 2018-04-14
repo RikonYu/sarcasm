@@ -110,7 +110,7 @@ class Attention(Layer):
 pos_oh={}
 esize=300
 sent_len=540
-TRAINING=sys.argv[1]
+TRAINING=int(sys.argv[1])
 class mine_model:
     def __init__(self):
         self.conv_1=Conv1D(128,2,padding='valid',activation='relu')
