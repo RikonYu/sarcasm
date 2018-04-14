@@ -36,8 +36,7 @@ class pretrain1_model:
         return dense
 layers=pretrain1_model()
 def get_out(inp):
-    dense.layers.forward(inp)
-    return dense
+    return layers.forward(inp)
 if(TRAINING):
     toffset=0
     foffset=0
