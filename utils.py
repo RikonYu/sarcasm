@@ -31,7 +31,7 @@ def prepare_pos():
         ks+=1
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
-    return [categ(pos_dict[i]) for i,_ in ans]
+    return [categ(pos_dict[i]) for _,i in ans]
         
 def getline(fin,offset):
     fin.seek(offset)
