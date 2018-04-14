@@ -13,20 +13,30 @@ from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
+class pretrain1_model:
+    def __init__(self):
+        self.conv1=Conv2D(96,(2,esize),activation='relu')
+        self.conv2=Conv2D(96,(3,esize),activation='relu')
+        self.conv3=Conv2D(96,(4,esize),activation='relu')
+        self.dense=Dense(256,activation='relu')
+    def forward(self,inp):
+        conv1=self.conv1(inp)
+        conv2=self.conv2(inp)
+        conv3=self.conv3(inp)
+        pool1=MaxPooling2D((sent_len-1,1))(conv1)
+        pool2=MaxPooling2D((sent_len-2,1))(conv2)
+        pool3=MaxPooling2D((sent_len-3,1))(conv3)
+        flat1=Flatten()(pool1)
+        flat2=Flatten()(pool2)
+        flat3=Flatten()(pool3)
+        conc=Concatenate()([flat1,flat2,flat3])
+        conc=Dropout(0.25)(conc)
+        dense=self.dense(conc)
+        dense=Dropout(0.5)(dense)
+        return dense
+layers=pretrain1_model()
 def get_out(inp):
-    conv1=Conv2D(96,(2,esize),activation='relu')(inp)
-    conv2=Conv2D(96,(3,esize),activation='relu')(inp)
-    conv3=Conv2D(96,(4,esize),activation='relu')(inp)
-    pool1=MaxPooling2D((sent_len-1,1))(conv1)
-    pool2=MaxPooling2D((sent_len-2,1))(conv2)
-    pool3=MaxPooling2D((sent_len-3,1))(conv3)
-    flat1=Flatten()(pool1)
-    flat2=Flatten()(pool2)
-    flat3=Flatten()(pool3)
-    conc=Concatenate()([flat1,flat2,flat3])
-    conc=Dropout(0.25)(conc)
-    dense=Dense(256,activation='relu')(conc)
-    dense=Dropout(0.5)(dense)
+    dense.layers.forward(inp)
     return dense
 if(TRAINING):
     toffset=0
@@ -34,7 +44,6 @@ if(TRAINING):
     try:
         toffset=int(sys.argv[2])
         foffset=int(sys.argv[3])
-        
     except:
         pass
     inp=Input(shape=(sent_len,esize,1),dtype='float32')

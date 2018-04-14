@@ -10,7 +10,7 @@ import utils
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers import Input,Concatenate, Layer
-from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
+from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv1D,MaxPooling1D
 from keras.optimizers import Adam
 
 class Attention(Layer):
@@ -115,15 +115,24 @@ def get_pos(sent):
 esize=300
 sent_len=540
 TRAINING=sys.argv[1]
-def forward(inp,pos):
-    conv_inp_1=Conv2D(128,(3,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
-    conv_inp_2=Conv2D(128,(4,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
-    conv_inp_3=Conv2D(128,(5,esize),activation='relu',input_shape=(sent_len,esize,1))(inp)
-    pool_1=MaxPooling2D((3,1))(conv_inp_1)
-    pool_2=MaxPooling2D((3,1))(conv_inp_2)
-    pool_3=MaxPooling2D((3,1))(conv_inp_3)
+def forward(inp):
+    inp=Reshape([sent_len,-1])(inp)
+    conv_1=Conv1D(128,2,padding='valid',activation='relu')(inp)
+    conv_2=Conv1D(128,3,padding='valid',activation='relu')(inp)
+    conv_3=Conv1D(128,4,padding='valid',activation='relu')(inp)
+    pool_1=MaxPooling1D(3)(conv_1)
+    pool_2=MaxPooling1D(3)(conv_2)
+    pool_3=MaxPooling1D(3)(conv_3)
     pool_inp=Concatenate(axis=1)([pool_1,pool_2,pool_3])
-    print(KTF.int_shape(pool_inp))
+    lstm1=LSTM(96,activation='relu')(pool_1)
+    lstm2=LSTM(96,activation='relu')(pool_2)
+    lstm3=LSTM(96,activation='relu')(pool_3)
+    out=Concatenate()([lstm1,lstm2,lstm3])
+    out=Dropout(0.25)(out)
+    dense=Dense(256,activation='relu')(out)
+    dense=Dropout(0.5)(dense)
+    return result
+    
     
 if(TRAINING):
     KTF.clear_session()
@@ -131,5 +140,5 @@ if(TRAINING):
     left_pos=Input(shape=(sent_len,45,1),dtype='float32')
     right_inp=Input(shape=(sent_len,esize,1),dtype='float32')
     right_pos=Input(shape=(sent_len,45,1),dtype='float32')
-    forward(left_inp,left_pos)
+    left_out=forward(inp)
     
