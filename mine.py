@@ -108,37 +108,70 @@ class Attention(Layer):
         #return input_shape[0], input_shape[-1]
         return input_shape[0],  self.features_dim
 pos_oh={}
-def get_pos(sent):
-    ans=ntlk.pos_tag(sent)
-    return [pos_oh[i] for i,_ in ans]
-
 esize=300
 sent_len=540
 TRAINING=sys.argv[1]
-def forward(inp):
-    inp=Reshape([sent_len,-1])(inp)
-    conv_1=Conv1D(128,2,padding='valid',activation='relu')(inp)
-    conv_2=Conv1D(128,3,padding='valid',activation='relu')(inp)
-    conv_3=Conv1D(128,4,padding='valid',activation='relu')(inp)
-    pool_1=MaxPooling1D(3)(conv_1)
-    pool_2=MaxPooling1D(3)(conv_2)
-    pool_3=MaxPooling1D(3)(conv_3)
-    pool_inp=Concatenate(axis=1)([pool_1,pool_2,pool_3])
-    lstm1=LSTM(96,activation='relu')(pool_1)
-    lstm2=LSTM(96,activation='relu')(pool_2)
-    lstm3=LSTM(96,activation='relu')(pool_3)
-    out=Concatenate()([lstm1,lstm2,lstm3])
-    out=Dropout(0.25)(out)
-    dense=Dense(256,activation='relu')(out)
-    dense=Dropout(0.5)(dense)
-    return result
-    
-    
+class mine_model:
+    def __init__(self):
+        self.conv_1=Conv1D(128,2,padding='valid',activation='relu')
+        self.conv_2=Conv1D(128,3,padding='valid',activation='relu')
+        self.conv_3=Conv1D(128,4,padding='valid',activation='relu')
+        self.lstm1=LSTM(96,activation='relu')
+        self.lstm2=LSTM(96,activation='relu')
+        self.lstm3=LSTM(96,activation='relu')
+        self.dense=Dense(256,activation='relu')
+    def forward(self,inp):
+        inp=Reshape([sent_len,-1])(inp)
+        conv_1=self.conv_1(inp)
+        conv_2=self.conv_2(inp)
+        conv_3=self.conv_3(inp)
+        pool_1=MaxPooling1D(3)(conv_1)
+        pool_2=MaxPooling1D(3)(conv_2)
+        pool_3=MaxPooling1D(3)(conv_3)
+        pool_inp=Concatenate(axis=1)([pool_1,pool_2,pool_3])
+        lstm1=self.lstm1(pool_1)
+        lstm2=self.lstm2(pool_2)
+        lstm3=self.lstm3(pool_3)
+        out=Concatenate()([lstm1,lstm2,lstm3])
+        out=Dropout(0.25)(out)
+        dense=self.dense(out)
+        dense=Dropout(0.5)(dense)
+        return dense
+word_layers=mine_model()
+pos_layers=mine_model()
+def forward(inp,pos):
+    wout=word_layers(inp)
+    pout=pos_layers(pos)
+    return wout,pout
+utils.prepare_pos()
 if(TRAINING):
+    toffset=0
+    foffset=0
+    try:
+        toffset=int(sys.argv[2])
+        foffset=int(sys.argv[3])
+    except:
+        pass
     KTF.clear_session()
     left_inp=Input(shape=(sent_len,esize,1),dtype='float32')
     left_pos=Input(shape=(sent_len,45,1),dtype='float32')
     right_inp=Input(shape=(sent_len,esize,1),dtype='float32')
     right_pos=Input(shape=(sent_len,45,1),dtype='float32')
-    left_out=forward(inp)
+    left_out=forward(left_inp,left_pos)
+    right_out=forward(right_inp,right_pos)
+    
+    if(os.path.isfile('mine-pr.h5')==False):
+        predense=Dense(2,activation='relu')(Concatenate()(left_out[0],left_out[1]))
+        model=Model(inputs=[left_inp,left_pos],outputs=left_out)
+        model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
+        utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
+    else:
+        realdense=Dense(2,activation='relu')(Concatenate()(left_out[0],left_out[1],right_out[0],right_out[1]))
+        model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
+        model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
+        model.load_weights('mine-pr.h5',by_name=True)
+        utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
+else:
+    
+        
     

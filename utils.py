@@ -134,7 +134,59 @@ def pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
-        
+    
+def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
+    start_time=time.time()
+    model=None
+    model_name=(foutname+'_pr_'+str(epoch)+'.h5')
+    fsent=open('../Sentiment.csv','r',encoding='utf-8')
+    fout=open('pre'+foutname,'w')
+    global sent_len
+    ins=[]
+    pos=[]
+    if(offset==0):
+        if(os.path.isfile(model_name)):
+            model=load_model(model_name)
+            print('found trained model %s,proceed'%model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
+            return
+        elif(os.path.isfile((foutname+'_pr_'+str(epoch+1)+'.h5'))):
+            model=load_model((foutname+'_pr_'+str(epoch+1)+'.h5'))
+            print('found latest model %s, training'%(foutname+'_'+str(epoch+1)+'.h5'))
+        else:
+            model=default_model
+            print('using blank model')
+    else:
+        model=load_model(model_name)
+        print('resume %s'%model_name)
+    #fsent.seek(offset)
+    posfile=open('prepos.txt','rb')
+    prepos=pickle.load(posfile)[1:]
+    posfile.close()
+    if(offset==0):
+        numpy.random.shuffle(prepos)
+    for i in range(offset,len(prepos)):
+        row=getline(fsent,prepos[i])
+        #print(row)
+        ins.append(clean_up([int(row[1]),row[3]],sent_len*(1+int(double))))
+        pos.append(read_pos(row[3]))
+        if(len(ins)>=batch_size):
+            x=numpy.stack([k[0] for k in ins])
+            y=numpy.stack([k[1] for k in ins])
+            history=model.fit([x,pos],y,epochs=1,verbose=2,validation_split=0)
+            fout.write(str(history.history['loss'][0]))
+            fout.write('\n')
+            ins=[]
+            pos=[]
+        if(time.time()-start_time>=1900):
+            model.save(model_name,overwrite=True)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(fsent.tell()),'0'])
+            return
+    if(epoch>0):
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
+        return
+
+
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
     model=None
@@ -176,14 +228,8 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
     tposfile.close()
     fposfile.close()
     if(toffset==0):
-        #tposfile=open('truepos.txt','wb')
-        #fposfile=open('falsepos.txt','wb')
         numpy.random.shuffle(tpos)
         numpy.random.shuffle(fpos)
-        #pickle.dump(tpos,tposfile)
-        #pickle.dump(fpos,fposfile)
-        #tposfile.close()
-        #fposfile.close()
     print("Start training on epoch %d"%epoch)
     fout=open(foutname+'.txt','a')
     for i in range(toffset,len(tpos)):
