@@ -21,6 +21,7 @@ esize=300
 os.environ["CUDA_VISIBLE_DEVICES"]='5'
 sent_len=540
 pos_dict={}
+
 def prepare_pos():
     ks=0
     global pos_dict
@@ -32,7 +33,7 @@ def prepare_pos():
     pos_dict['#']=ks
 def read_pos(sent):
     ans=nltk.pos_tag(sent.split())
-    ans=numpy.array([categ(pos_dict[i]) for _,i in ans])
+    ans=numpy.array([numpy.eys(pos_dict[i])[post_dict[i]] for _,i in ans])
     return numpy.resize(ans,[sent_len,len(pos_dict),1])
         
 def getline(fin,offset):
@@ -176,8 +177,8 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
             x=numpy.stack([k[0] for k in ins])
             y=numpy.stack([k[1] for k in ins])
             print(numpy.array(pos).shape,numpy.array(x).shape,numpy.array(y).shape)
-            history=model.fit([numpy.zeros([2048,540,300,1]),numpy.zeros([2048,540,46,1])],numpy.zeros([2048,2]),epochs=1,validation_split=0)
-            #history=model.fit([x,numpy.array(pos)],y,epochs=1,verbose=2,validation_split=0)
+            #history=model.fit([numpy.zeros([2048,540,300,1]),numpy.zeros([2048,540,46,1])],numpy.zeros([2048,2]),epochs=1,validation_split=0)
+            history=model.fit([x,numpy.array(pos)],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
