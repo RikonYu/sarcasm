@@ -172,6 +172,5 @@ if(TRAINING):
         model.load_weights('mine-pr.h5',by_name=True)
         utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:
-    
-        
+    pass
     
