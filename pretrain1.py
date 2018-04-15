@@ -60,8 +60,8 @@ if(TRAINING):
     #train
         model=Model(inputs=[inp,add_inp],outputs=real_out)
         model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-        if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
-            model.load_weights("pretrain1-pr.h5",by_name=True)
+        #if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
+        #    model.load_weights("pretrain1-pr.h5",by_name=True)
         utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
     if(os.path.isfile('pretrain1-pr.h5')==False):
