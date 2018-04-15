@@ -71,7 +71,6 @@ if(TRAINING):
             #model.load_weights("pretrain1-pr.h5",by_name=True)
             model=load_model('pretrain1-pr.h5').get_weights()
             for i in range(len(model)):
-                for j in range(len(model[i])):
                     print(model[i].shape,end=' ')
                 print('\n')
             llayers.set_weights(model)
