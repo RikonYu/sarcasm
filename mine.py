@@ -161,12 +161,12 @@ if(TRAINING):
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
     if(os.path.isfile('mine-pr.h5')==False):
         model=Model(inputs=[left_inp,left_pos],outputs=predense)
-        model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
+        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
     else:
         realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
         model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
-        model.compile(optimizer='rmsprop',loss='categorical_crossentropy',metrics=['accuracy'])
+        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         model.load_weights('mine-pr.h5',by_name=True)
         utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:

@@ -35,7 +35,7 @@ if(TRAINING):
     if(len(sys.argv)>2):
         toffset=int(sys.argv[2])
         foffset=int(sys.argv[3])
-    model.compile(loss='categorical_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
     utils.train(model,TRAINING,2048,'baseline2','baseline2-test.txt',True,toffset,foffset)
 else:
     min_loss=1000
