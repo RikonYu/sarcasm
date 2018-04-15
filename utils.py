@@ -345,10 +345,9 @@ def mine_train(default_model,epoch,batch_size,foutname,testoutname,singular,toff
                 x1=numpy.stack([k[1] for k in ins])
                 p0=numpy.stack([k[0] for k in pos])
                 p1=numpy.stack([k[1] for k in pos])
-                rp0=numpy.zeros(p0.shape).astype('float64')
-                rp1=numpy.zeros(p1.shape).astype('float64')
-                numpy.copyto(rp0,p0,'unsafe')
-                numpy.copyto(rp1,p1,'unsafe')
+                rp0=p0.reshape([batch_size,sent_len,46,1])
+                rp1=p1.reshape([batch_size,sent_len,46,1])
+                
                 
                 y=numpy.stack([k[2] for k in ins])
                 history=model.fit([x0,rp0,x1,rp1],y,epochs=1,verbose=2,validation_split=0)
