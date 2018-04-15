@@ -8,71 +8,56 @@ import os
 import utils
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
-from keras.layers import Input,Concatenate
-from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D
+from keras.layers import Input,Concatenate, Bidirectional
+from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv1D,MaxPooling1D
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 sent_len=540
 esize=300
-def forward(inp):
-    conv1_1=Conv2D(50,(4,1),activation='relu',padding='valid')(inp)
-    conv1_2=Conv2D(50,(5,1),activation='relu',padding='valid')(inp)
-    conv1=Concatenate(axis=1)([conv1_1,conv1_2])
-    pool1=MaxPooling2D((2,1))(conv1)
-    conv2=Conv2D(100,(3,1),activation='relu',padding='valid')(pool1)
-    pool2=MaxPooling2D((2,esize))(conv2)
-    flat1=Flatten()(pool2)
-    dense1=Dense(100,activation='relu')(flat1)
-    dense1=Dropout(0.25)(dense1)
-    return dense1
+class baseline3_model:
+    def __init__(self):
+        self.lstm1=Bidirectional(LSTM(256,return_sequences=True))
+        self.lstm2=Bidirectional(LSTM(256,return_sequences=True))
+        self.conv1=Conv1D(256,3)
+        self.conv2_1=Conv1D(128,3)
+        self.conv2_2=Conv1D(128,5)
+        self.dense=Dense(2,activation='softmax')
+    def forward(self,inp):
+        print(KTF.int_shape(inp))
+        inp=Reshape([sent_len*2,-1])(inp)
+        print(KTF.int_shape(inp))
+        lstm1=self.lstm1(inp)
+        lstm2=self.lstm2(lstm1)
+        conv1=self.conv1(lstm2)
+        conv2_1=self.conv2_1(conv1)
+        conv2_2=self.conv2_2(conv1)
+        pool1=MaxPooling1D(sent_len*2-4)(conv2_1)
+        pool2=MaxPooling1D(sent_len*2-6)(conv2_2)
+        out=self.dense(Concatenate()([pool1,pool2]))
+        return out
+        
+layers=baseline3_model()
 if(TRAINING):
     KTF.clear_session()
-    main_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
-    #sent_inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
-    #main_out=forward(main_inp)
-    sent_out=forward(main_inp)
-    main_out=forward(main_inp)
-    sent_res=Dense(2,activation='softmax')(sent_out)
-    out=Concatenate()([main_out,sent_out])
-    out=Dense(2,activation='softmax')(out)
+    inp=Input(shape=(sent_len*2,esize,1),dtype='float32')
+    out=layers.forward(inp)
     toffset=0
     foffset=0
-    #raise Exception
     if(len(sys.argv)>2):
         toffset=int(sys.argv[2])
         foffset=int(sys.argv[3])
-    if(os.path.isfile('baseline3-pr.h5')==False):
-        #pretrain
-        model=Model(inputs=main_inp,outputs=sent_res)
-        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-        utils.pretrain(model,TRAINING,128,'baseline3',toffset,double=True)
-    else:
-        model=Model(inputs=main_inp,outputs=out)
-        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-        model.load_weights('baseline3-pr.h5',by_name=True)
-        utils.train(model,TRAINING,128,'baseline3','baseline3-test.txt',True,toffset,foffset)
+    model=Model(inputs=inp,outputs=out)
+    model.compile(optimizer='sgd',loss='categorical_crossentropy',metrics=['accuracy'])
+    utils.train(model,TRAINING,2048,'baseline3','baseline3-test.txt',True,toffset,foffset)
 else:
-    if(os.path.isfile('baseline3-pr.h5')==False):
-        ind=1
-        best=1000
-        bpos=-1
-        while(os.path.isfile('baseline3_pr_%d.h5'%ind)==True):
-            model=load_model('baseline3_pr_%d.h5'%ind)
-            ans=utils.test(model,singular=True)[1]
-            if(ans>best):
-                best=ans
-                bpos=ind
-            ind+=1
-        os.system('cp baseline3_pr_%d.h5 baseline3-pr.h5'%min_pos)
-    else:
-        ind=1
-        best=1000
-        bpos=-1
-        while(os.path.isfile('baseline3_%d.h5'%ind)==True):
-            model=load_model('baseline3_%d.h5'%ind)
-            ans=utils.test(model,singular=True)[1]
-            if(ans>best):
-                best=ans
-                bpos=ind
-            ind+=1
-        os.system('cp baseline3_%d.h5 baseline3.h5'%min_pos)
+    ind=1
+    best=1000
+    bpos=-1
+    while(os.path.isfile('baseline3_%d.h5'%ind)==True):
+        model=load_model('baseline3_%d.h5'%ind)
+        ans=utils.test(model,singular=True)[1]
+        if(ans>best):
+            best=ans
+            bpos=ind
+        ind+=1
+    os.system('cp baseline3_%d.h5 baseline3.h5'%min_pos)

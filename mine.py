@@ -121,7 +121,7 @@ class mine_model:
         self.lstm3=LSTM(96)
         self.dense=Dense(256,activation='relu')
     def forward(self,inp):
-        inp=Reshape([sent_len,-1])(inp)
+        inp=Reshape([sent_len,esize])(inp)
         conv_1=self.conv_1(inp)
         conv_2=self.conv_2(inp)
         conv_3=self.conv_3(inp)
@@ -168,7 +168,8 @@ if(TRAINING):
         realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
         model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
         model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
-        model.load_weights('mine-pr.h5',by_name=True)
+        if(os.path.isfile('mine_%d.h5'%TRAINING)==False and os.path.isfile('mine_%d.h5'%(TRAINING+1))==False and toffset==0):
+            model.load_weights('mine-pr.h5',by_name=True)
         utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:
     pass
