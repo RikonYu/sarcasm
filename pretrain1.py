@@ -70,7 +70,10 @@ if(TRAINING):
         if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
             #model.load_weights("pretrain1-pr.h5",by_name=True)
             model=load_model('pretrain1-pr.h5').get_weights()
-            print(len(model))
+            for i in range(len(model)):
+                for j in range(len(model[i])):
+                    print(model[i].shape,end=' ')
+                print('\n')
             llayers.set_weights(model)
             rlayers.set_weights(model)
             
