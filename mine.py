@@ -11,7 +11,7 @@ from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers import Input,Concatenate, Layer
 from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv1D,MaxPooling1D
-from keras.optimizers import Adam
+from keras.optimizers import Adam,SGD
 
 class Attention(Layer):
     def __init__(self, step_dim,
@@ -159,14 +159,15 @@ if(TRAINING):
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
+    opt=SGD(lr=0.0001,momentum=0.9,decay=1e-6)
     if(os.path.isfile('mine-pr.h5')==False):
         model=Model(inputs=[left_inp,left_pos],outputs=predense)
-        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
+        model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
         utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
     else:
         realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
         model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
-        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
+        model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
         model.load_weights('mine-pr.h5',by_name=True)
         utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:
