@@ -263,7 +263,7 @@ def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0
                 y=numpy.stack([k[2] for k in ins])
                 history=model.fit(numpy.concatenate((x0,x1),axis=1),y,epochs=1,verbose=2,validation_split=0)
                 if(foutname=='baseline2'):
-                    print(model.predict(numpy.concatenate(x0,x1),axis=1))
+                    print(model.predict((numpy.concatenate(x0,x1),axis=1)))
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]

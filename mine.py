@@ -116,9 +116,9 @@ class mine_model:
         self.conv_1=Conv1D(128,2,padding='valid',activation='relu')
         self.conv_2=Conv1D(128,3,padding='valid',activation='relu')
         self.conv_3=Conv1D(128,4,padding='valid',activation='relu')
-        self.lstm1=LSTM(96,activation='relu')
-        self.lstm2=LSTM(96,activation='relu')
-        self.lstm3=LSTM(96,activation='relu')
+        self.lstm1=LSTM(96)
+        self.lstm2=LSTM(96)
+        self.lstm3=LSTM(96)
         self.dense=Dense(256,activation='relu')
     def forward(self,inp):
         inp=Reshape([sent_len,-1])(inp)
