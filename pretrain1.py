@@ -34,7 +34,8 @@ class pretrain1_model:
         dense=self.dense(conc)
         dense=Dropout(0.5)(dense)
         return dense
-layers=pretrain1_model()
+llayers=pretrain1_model()
+rlayers=pretrain1_model()
 def get_out(inp):
     return layers.forward(inp)
 if(TRAINING):
@@ -47,8 +48,8 @@ if(TRAINING):
         pass
     inp=Input(shape=(sent_len,esize,1),dtype='float32')
     add_inp=Input(shape=(sent_len,esize,1),dtype='float32')
-    pre_dense=get_out(inp)
-    real_dense=get_out(add_inp)
+    pre_dense=llayers.forward(inp)
+    real_dense=rlayers.forward(add_inp)
     pre_out=Dense(2,activation='softmax')(pre_dense)
     real_out=Dense(2,activation='softmax')(Concatenate()([pre_dense,real_dense]))
     model=Model(inputs=inp,outputs=pre_out)
