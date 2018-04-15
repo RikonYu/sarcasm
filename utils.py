@@ -345,8 +345,8 @@ def mine_train(default_model,epoch,batch_size,foutname,testoutname,singular,toff
                 x1=numpy.stack([k[1] for k in ins])
                 p0=numpy.stack([k[0] for k in pos])
                 p1=numpy.stack([k[1] for k in pos])
-                p0.resize([batch_size,sent_len,46,1])
-                p1.resize([batch_size,sent_len,46,1])
+                #p0.resize([batch_size,sent_len,46,1])
+                #p1.resize([batch_size,sent_len,46,1])
                 
                 
                 y=numpy.stack([k[2] for k in ins])
