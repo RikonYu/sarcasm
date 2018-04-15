@@ -38,7 +38,7 @@ class pretrain1_model:
         self.conv1.set_weights([weights[0],weights[1]])
         self.conv2.set_weights([weights[2],weights[3]])
         self.conv3.set_weights([weights[4],weights[5]])
-        self.dense.set_weights([weights[36],weights[7]])
+        self.dense.set_weights([weights[6],weights[7]])
         
 llayers=pretrain1_model()
 rlayers=pretrain1_model()
