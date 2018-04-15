@@ -23,9 +23,9 @@ class baseline3_model:
         self.conv2_2=Conv1D(128,5)
         self.dense=Dense(2,activation='softmax')
     def forward(self,inp):
-        print(KTF.int_shape(inp))
+        #print(KTF.int_shape(inp))
         inp=Reshape([sent_len*2,-1])(inp)
-        print(KTF.int_shape(inp))
+        #print(KTF.int_shape(inp))
         lstm1=self.lstm1(inp)
         lstm2=self.lstm2(lstm1)
         conv1=self.conv1(lstm2)
@@ -33,7 +33,8 @@ class baseline3_model:
         conv2_2=self.conv2_2(conv1)
         pool1=MaxPooling1D(sent_len*2-4)(conv2_1)
         pool2=MaxPooling1D(sent_len*2-6)(conv2_2)
-        out=self.dense(Concatenate()([pool1,pool2]))
+        kk=Flatten()(Concatenate()([pool1,pool2]))
+        out=self.dense(kk)
         return out
         
 layers=baseline3_model()
