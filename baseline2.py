@@ -6,7 +6,7 @@ import os,sys
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers.convolutional import Convolution1D, MaxPooling1D
-from keras.layers import Reshape,Dense, Dropout, Embedding, LSTMCell,Flatten,Conv2D,MaxPooling2D,Input, Conv1D, Bidirectional
+from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv2D,MaxPooling2D,Input, Conv1D, Bidirectional
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 esize=300
@@ -19,8 +19,8 @@ def forward(inp):
     #conv2=Conv2D(256,(2,1),activation='sigmoid',padding='valid')(conv1)
     #conv2=Reshape((sent_len*2-2,256))(conv1)
     #conv2=Dropout(0.25)(conv2)
-    lstm1=Bidirectional(LSTMCell(256,return_sequences=True))(real_inp)
-    lstm2=Bidirectional(LSTMCell(256))(lstm1)
+    lstm1=Bidirectional(LSTM(256,return_sequences=True))(real_inp)
+    lstm2=Bidirectional(LSTM(256))(lstm1)
     #raise Exception
     dense=Dense(256,activation='relu',kernel_initializer='he_normal')(lstm2)
     out=Dense(2,activation='softmax')(dense)
