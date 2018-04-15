@@ -34,6 +34,12 @@ class pretrain1_model:
         dense=self.dense(conc)
         dense=Dropout(0.5)(dense)
         return dense
+    def set_weights(weights):
+        self.conv1.set_weights([weights[0]])
+        self.conv2.set_weights([weights[1]])
+        self.conv3.set_weights([weights[2]])
+        self.dense.set_weights([weights[3]])
+        
 llayers=pretrain1_model()
 rlayers=pretrain1_model()
 def get_out(inp):
@@ -62,8 +68,12 @@ if(TRAINING):
         model=Model(inputs=[inp,add_inp],outputs=real_out)
         model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
-            model.load_weights("pretrain1-pr.h5",by_name=True)
-            rlayers.model.set_weights(llayers.model.get_weights())
+            #model.load_weights("pretrain1-pr.h5",by_name=True)
+            model=load_model('pretrain1-pr.h5').get_weights()
+            print(model)
+            llayers.set_weights(model)
+            rlayers.set_weights(model)
+            
         utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
     if(os.path.isfile('pretrain1-pr.h5')==False):
