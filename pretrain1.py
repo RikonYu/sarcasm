@@ -34,7 +34,7 @@ class pretrain1_model:
         dense=self.dense(conc)
         dense=Dropout(0.5)(dense)
         return dense
-    def set_weights(weights):
+    def set_weights(self,weights):
         self.conv1.set_weights([weights[0]])
         self.conv2.set_weights([weights[1]])
         self.conv3.set_weights([weights[2]])
@@ -70,7 +70,7 @@ if(TRAINING):
         if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
             #model.load_weights("pretrain1-pr.h5",by_name=True)
             model=load_model('pretrain1-pr.h5').get_weights()
-            print(model)
+            print(len(model))
             llayers.set_weights(model)
             rlayers.set_weights(model)
             
