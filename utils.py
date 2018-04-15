@@ -347,7 +347,7 @@ def mine_train(default_model,epoch,batch_size,foutname,testoutname,singular,toff
                 p1=numpy.stack([k[1] for k in pos])
                 
                 y=numpy.stack([k[2] for k in ins])
-                history=model.fit([x0,p0,x1,x1],y,epochs=1,verbose=2,validation_split=0)
+                history=model.fit([x0,p0,x1,p1],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
