@@ -113,13 +113,13 @@ sent_len=540
 TRAINING=int(sys.argv[1])
 class mine_model:
     def __init__(self):
-        self.conv_1=Conv1D(128,2,padding='valid',activation='relu')
-        self.conv_2=Conv1D(128,3,padding='valid',activation='relu')
-        self.conv_3=Conv1D(128,4,padding='valid',activation='relu')
+        self.conv_1=Conv1D(128,2,padding='valid',activation='sigmoid')
+        self.conv_2=Conv1D(128,3,padding='valid',activation='sigmoid')
+        self.conv_3=Conv1D(128,4,padding='valid',activation='sigmoid')
         self.lstm1=LSTM(96)
         self.lstm2=LSTM(96)
         self.lstm3=LSTM(96)
-        self.dense=Dense(256,activation='relu')
+        self.dense=Dense(256,activation='sigmoid')
     def forward(self,inp):
         inp=Reshape([sent_len,-1])(inp)
         conv_1=self.conv_1(inp)
@@ -159,7 +159,7 @@ if(TRAINING):
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
-    opt=SGD(lr=0.001,momentum=0.9,decay=1e-6)
+    opt=SGD(lr=0.0003,momentum=0.9,decay=1e-6)
     if(os.path.isfile('mine-pr.h5')==False):
         model=Model(inputs=[left_inp,left_pos],outputs=predense)
         model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
