@@ -159,7 +159,7 @@ if(TRAINING):
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
     predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
-    opt=SGD(lr=0.0001,momentum=0.9,decay=1e-6)
+    opt=SGD(lr=0.001,momentum=0.9,decay=1e-6)
     if(os.path.isfile('mine-pr.h5')==False):
         model=Model(inputs=[left_inp,left_pos],outputs=predense)
         model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
