@@ -69,12 +69,10 @@ if(TRAINING):
         model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
         if(os.path.isfile('pretrain1_%d.h5'%TRAINING)==False and os.path.isfile('pretrain1_%d.h5'%(TRAINING+1))==False and toffset==0):
             #model.load_weights("pretrain1-pr.h5",by_name=True)
-            model=load_model('pretrain1-pr.h5').get_weights()
-            for i in range(len(model)):
-                print(model[i].shape,end=' ')
+            wts=load_model('pretrain1-pr.h5').get_weights()
             print('\n')
-            llayers.set_weights(model)
-            rlayers.set_weights(model)
+            llayers.set_weights(wts)
+            rlayers.set_weights(wts)
             
         utils.train(model,TRAINING,2048,'pretrain1','pretrain1-test.txt',False,toffset,foffset)
 else:
