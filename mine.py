@@ -170,7 +170,7 @@ if(TRAINING):
         model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
         #if(os.path.isfile('mine_%d.h5'%TRAINING)==False and os.path.isfile('mine_%d.h5'%(TRAINING+1))==False and toffset==0):
         #    model.load_weights('mine-pr.h5',by_name=True)
-        utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
+        utils.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:
     min_loss=1000
     min_pos=-1
