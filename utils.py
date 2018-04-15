@@ -345,12 +345,12 @@ def mine_train(default_model,epoch,batch_size,foutname,testoutname,singular,toff
                 x1=numpy.stack([k[1] for k in ins])
                 p0=numpy.stack([k[0] for k in pos])
                 p1=numpy.stack([k[1] for k in pos])
-                rp0=p0.resize([batch_size,sent_len,46,1])
-                rp1=p1.resize([batch_size,sent_len,46,1])
+                p0.resize([batch_size,sent_len,46,1])
+                p1.resize([batch_size,sent_len,46,1])
                 
                 
                 y=numpy.stack([k[2] for k in ins])
-                history=model.fit([x0,rp0,x1,rp1],y,epochs=1,verbose=2,validation_split=0)
+                history=model.fit([x0,p0,x1,p1],y,epochs=1,verbose=2,validation_split=0)
                 #history=model.fit([x0,,x1,numpy.zeros(p1.shape)],y,epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
