@@ -5,8 +5,8 @@ import gensim
 import os,sys
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
-from keras.layers.convolutional import Convolution1D, MaxPooling1D, Bidirectional
-from keras.layers import Reshape,Dense, Dropout, Embedding, LSTMCell,Flatten,Conv2D,MaxPooling2D,Input, Conv1D
+from keras.layers.convolutional import Convolution1D, MaxPooling1D
+from keras.layers import Reshape,Dense, Dropout, Embedding, LSTMCell,Flatten,Conv2D,MaxPooling2D,Input, Conv1D, Bidirectional
 from keras.optimizers import Adam
 TRAINING=int(sys.argv[1])
 esize=300
