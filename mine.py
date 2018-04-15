@@ -168,9 +168,19 @@ if(TRAINING):
         realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
         model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
         model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
-        if(os.path.isfile('mine_%d.h5'%TRAINING)==False and os.path.isfile('mine_%d.h5'%(TRAINING+1))==False and toffset==0):
-            model.load_weights('mine-pr.h5',by_name=True)
+        #if(os.path.isfile('mine_%d.h5'%TRAINING)==False and os.path.isfile('mine_%d.h5'%(TRAINING+1))==False and toffset==0):
+        #    model.load_weights('mine-pr.h5',by_name=True)
         utlis.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
 else:
-    pass
+    min_loss=1000
+    min_pos=-1
+    for i in range(1,10):
+        model=load_model('mine_%d.h5'%i)
+        if(model):print('loaded %d'%i)
+        ans=utils.mine_test(model,False)
+        print(' '.join(ans))
+        if(float(ans[3])<min_loss):
+            min_loss=float(ans[3])
+            min_pos=i
+        os.system('cp pretrain1_%d.h5 pretrain1.h5'%min_pos)
     

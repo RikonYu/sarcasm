@@ -407,10 +407,7 @@ def mine_test(model,singular=False):
             continue
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         pos=[read_pos(row[0]),read_pos(row[1])]
-        if(singular==True):
-            ans=model.evaluate(numpy.concatenate(([ins[0]],[ins[1]]),axis=1),categ([int(row[2])],2),verbose=0)
-        else:
-            ans=model.evaluate([numpy.array([ins[0]]),numpy.array(pos[0]),numpy.array([ins[1]]),numpy.array(pos[1])],categ([int(row[2])],2),verbose=0)
+        ans=model.evaluate([numpy.array([ins[0]]),numpy.array(pos[0]),numpy.array([ins[1]]),numpy.array(pos[1])],categ([int(row[2])],2),verbose=0)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
