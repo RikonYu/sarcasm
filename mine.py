@@ -113,9 +113,9 @@ sent_len=540
 TRAINING=int(sys.argv[1])
 class mine_model:
     def __init__(self):
-        self.conv1=Conv2D(96,(2,esize),activation='relu')
-        self.conv2=Conv2D(96,(3,esize),activation='relu')
-        self.conv3=Conv2D(96,(4,esize),activation='relu')
+        self.conv_1=Conv2D(96,(2,esize),activation='relu')
+        self.conv_2=Conv2D(96,(3,esize),activation='relu')
+        self.conv_3=Conv2D(96,(4,esize),activation='relu')
         self.lstm1=Bidirectional(LSTM(96,return_sequences=True))
         self.lstm2=Bidirectional(LSTM(96,return_sequences=True))
         self.lstm3=Bidirectional(LSTM(96,return_sequences=True))
