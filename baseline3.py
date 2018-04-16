@@ -58,8 +58,5 @@ else:
         model=load_model('baseline3_%d.h5'%ind)
         ans=utils.test(model,singular=True)[1]
         print(' '.join(ans))
-        if(ans>best):
-            best=ans
-            bpos=ind
-        ind+=1
-    os.system('cp baseline3_%d.h5 baseline3.h5'%min_pos)
+        if(ans[1]>best):
+
