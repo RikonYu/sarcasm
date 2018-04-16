@@ -10,7 +10,7 @@ import utils
 from keras import backend as KTF
 from keras.models import Sequential, Model, load_model
 from keras.layers import Input,Concatenate, Layer
-from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv1D,MaxPooling1D
+from keras.layers import Reshape,Dense, Dropout, Embedding, LSTM,Flatten,Conv1D,MaxPooling1D,Bidirectional
 from keras.optimizers import Adam,SGD
 
 class Attention(Layer):
@@ -116,9 +116,13 @@ class mine_model:
         self.conv_1=Conv1D(128,2,padding='valid',activation='sigmoid')
         self.conv_2=Conv1D(128,3,padding='valid',activation='sigmoid')
         self.conv_3=Conv1D(128,4,padding='valid',activation='sigmoid')
-        self.lstm1=LSTM(96)
-        self.lstm2=LSTM(96)
-        self.lstm3=LSTM(96)
+        self.lstm1=Bidirectional(LSTM(96,return_sequences=True))
+        self.lstm2=Bidirectional(LSTM(96,return_sequences=True))
+        self.lstm3=Bidirectional(LSTM(96,return_sequences=True))
+        self.lstm2_1=Bidirectional(LSTM(96))
+        self.lstm2_2=Bidirectional(LSTM(96))
+        self.lstm2_3=Bidirectional(LSTM(96))
+        
         self.dense=Dense(256,activation='sigmoid')
     def forward(self,inp):
         inp=Reshape([sent_len,-1])(inp)
@@ -131,7 +135,11 @@ class mine_model:
         lstm1=self.lstm1(pool_1)
         lstm2=self.lstm2(pool_2)
         lstm3=self.lstm3(pool_3)
-        out=Concatenate()([lstm1,lstm2,lstm3])
+        lstm21=self.lstm2_1(lstm1)
+        lstm22=self.lstm2_2(lstm2)
+        lstm23=self.lstm2_3(lstm3)
+        
+        out=Concatenate()([lstm21,lstm22,lstm23])
         out=Dropout(0.25)(out)
         dense=self.dense(out)
         dense=Dropout(0.5)(dense)
