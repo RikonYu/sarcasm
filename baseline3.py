@@ -58,5 +58,4 @@ else:
         model=load_model('baseline3_%d.h5'%ind)
         ans=utils.test(model,singular=True)[1]
         print(' '.join(ans))
-        if(ans[1]>best):
 
