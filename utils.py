@@ -194,7 +194,86 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
 
+def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
+    start_time=time.time()
+    model=None
+    global sent_len
+    model_name=(foutname+'_'+str(epoch)+'.h5')
+    if(epoch<0):
+        return
+    ins=[]
+    ftrue=open('./true_context.csv','r')
+    ffalse=open('./false_context.csv','r')
+    tplaces=pickle.load(open('./truepos.txt','rb'))
+    fplaces=pickle.load(open('./falsepos.txt','rb'))
+    try:
+        os.remove(testoutname)
+        os.remove(foutname)
+    except:
+        pass
 
+    if(toffset==0):
+        if(os.path.isfile(model_name)):
+            model=load_model(model_name)
+            print('found trained model %s,proceed'%model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
+            return
+        elif(os.path.isfile((foutname+'_'+str(epoch+1)+'.h5'))):
+            model=load_model((foutname+'_'+str(epoch+1)+'.h5'))
+            print('found latest model %s, training'%(foutname+'_'+str(epoch+1)+'.h5'))
+        else:
+            model=default_model
+            print('using blank model')
+        
+    else:
+        model=load_model(model_name)
+        print('resume %s'%model_name)
+    tposfile=open('truepos.txt','rb')
+    fposfile=open('falsepos.txt','rb')
+    tpos=pickle.load(tposfile)[:-1]
+    fpos=pickle.load(fposfile)[:-1]
+    tposfile.close()
+    fposfile.close()
+    if(toffset==0):
+        numpy.random.shuffle(tpos)
+        numpy.random.shuffle(fpos)
+    print("Start training on epoch %d"%epoch)
+    fout=open(foutname+'.txt','a')
+    for i in range(toffset,len(tpos)):
+        trues=getline(ftrue,tpos[i])
+        falses=getline(ffalse,fpos[i])
+        if(trues[0]!=''):
+            tins=[True,trues[0],trues[1]]
+            tins=clean_up(tins,sent_len)
+            ins.append(tins)
+        if(falses[0]!=''):
+            fins=[False,falses[0],falses[1]]
+            fins=clean_up(fins,sent_len)
+            ins.append(fins)
+        if(len(ins)>=batch_size and batch_size>0):
+                x0=numpy.stack([k[0] for k in ins])
+                x1=numpy.stack([k[1] for k in ins])
+                y=numpy.stack([k[2] for k in ins])
+                inp=cross_model.predict(numpy.concatenate((x0,x1),axis=1))
+                history=model.fit(inp[0],inp[1],epochs=1,verbose=2,validation_split=0)
+                
+            fout.write(str(history.history['loss'][0]))
+            fout.write('\n')
+            ins=[]
+        if(time.time()-start_time>=1900):
+            model.save(model_name)
+            subprocess.Popen(['python3',foutname+'.py',str(epoch),str(i),str(i)])
+            return
+            
+    model.save(model_name)
+
+    fout.close()
+    ftrue.close()
+    ffalse.close()
+    if(epoch>0):
+        subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
+        return
+    
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
     model=None

@@ -37,17 +37,10 @@ class mine_model:
         pool1=MaxPooling2D((sent_len-1,1))(conv1)
         pool2=MaxPooling2D((sent_len-2,1))(conv2)
         pool3=MaxPooling2D((sent_len-3,1))(conv3)
-        #lstm1=self.lstm1(conv_1)
-        #lstm2=self.lstm2(conv_2)
-        #lstm3=self.lstm3(conv_3)
-        #lstm21=self.lstm2_1(lstm1)
-        #lstm22=self.lstm2_2(lstm2)
-        #lstm23=self.lstm2_3(lstm3)
         flat1=Flatten()(pool1)
         flat2=Flatten()(pool2)
         flat3=Flatten()(pool3)
         conc=Concatenate()([flat1,flat2,flat3])
-        #out=Concatenate()([lstm21,lstm22,lstm23])
         out=Dropout(0.25)(conc)
         dense=self.dense(out)
         dense=Dropout(0.5)(dense)
@@ -74,19 +67,15 @@ if(TRAINING):
     right_pos=Input(shape=(sent_len,46,1),dtype='float32')
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
-    predense=Dense(2,activation='softmax',name='predense')(Concatenate()([left_out[0],left_out[1]]))
-    opt=SGD(lr=0.0003,momentum=0.9,decay=1e-6)
-    if(os.path.isfile('mine-pr.h5')==False):
-        model=Model(inputs=[left_inp,left_pos],outputs=predense)
-        model.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
-        utils.mine_pretrain(model,TRAINING,2048,'mine',toffset)
-    else:
-        realdense=Dense(2,activation='softmax',name='realdense')(Concatenate()([left_out[0],left_out[1],right_out[0],right_out[1]]))
-        model=Model(inputs=[left_inp,left_pos,right_inp,right_pos],outputs=realdense)
-        model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-        #if(os.path.isfile('mine_%d.h5'%TRAINING)==False and os.path.isfile('mine_%d.h5'%(TRAINING+1))==False and toffset==0):
-        #    model.load_weights('mine-pr.h5',by_name=True)
-        utils.mine_train(model,TRAINING,2048,'mine','mine-test.txt',False,toffset,foffset)
+    #use left_out[0] and right_out[0] as input, left_out[1] and right_out[1] as output
+    ana_in=Input(shape=(256),dtype='float32')
+    old_model=load_model('mine.h5')
+    print(old_model.summary())
+    ana_hid=Dense(1024,activation='sigmoid')(ana_in)
+    ana_out=Dense(256,activation='linear')(ana_hid)
+    model=Model(inputs=ana_in,outputs=ana_out)
+    model.compile(optimizer='adam',loss='MSE')
+    utils.ana_train(old_model,model,TRAINING,2048,'ana','ana-test.txt',False,toffset,foffset)
 else:
     min_loss=1000
     min_pos=-1
