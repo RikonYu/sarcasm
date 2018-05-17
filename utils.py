@@ -251,12 +251,11 @@ def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,si
             fins=clean_up(fins,sent_len)
             ins.append(fins)
         if(len(ins)>=batch_size and batch_size>0):
-                x0=numpy.stack([k[0] for k in ins])
-                x1=numpy.stack([k[1] for k in ins])
-                y=numpy.stack([k[2] for k in ins])
-                inp=cross_model.predict(numpy.concatenate((x0,x1),axis=1))
-                history=model.fit(inp[0],inp[1],epochs=1,verbose=2,validation_split=0)
-                
+            x0=numpy.stack([k[0] for k in ins])
+            x1=numpy.stack([k[1] for k in ins])
+            y=numpy.stack([k[2] for k in ins])
+            inp=cross_model.predict(numpy.concatenate((x0,x1),axis=1))
+            history=model.fit(inp[0],inp[1],epochs=1,verbose=2,validation_split=0)
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]

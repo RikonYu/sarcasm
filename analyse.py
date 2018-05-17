@@ -80,12 +80,12 @@ else:
     min_loss=1000
     min_pos=-1
     for i in range(1,10):
-        model=load_model('mine_%d.h5'%i)
+        model=load_model('ana_%d.h5'%i)
         if(model):print('loaded %d'%i)
         ans=utils.mine_test(model,False)
         print(' '.join(ans))
         if(float(ans[3])<min_loss):
             min_loss=float(ans[3])
             min_pos=i
-        os.system('cp mine_%d.h5 mine.h5'%min_pos)
+        os.system('cp ana_%d.h5 ana.h5'%min_pos)
     
