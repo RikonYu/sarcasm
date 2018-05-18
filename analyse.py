@@ -70,8 +70,8 @@ if(TRAINING):
     #use left_out[0] and right_out[0] as input, left_out[1] and right_out[1] as output
     ana_in=Input(shape=(None,256),dtype='float32')
     old_model=load_model('mine.h5')
-    print(old_model.summary())
-    raise Exception
+    #print(old_model.summary())
+    #raise Exception
     ana_hid=Dense(1024,activation='sigmoid')(ana_in)
     ana_out=Dense(256,activation='linear')(ana_hid)
     model=Model(inputs=ana_in,outputs=ana_out)

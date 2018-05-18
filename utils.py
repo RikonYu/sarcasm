@@ -254,8 +254,14 @@ def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,si
             x0=numpy.stack([k[0] for k in ins])
             x1=numpy.stack([k[1] for k in ins])
             y=numpy.stack([k[2] for k in ins])
-            inp=cross_model.predict(numpy.concatenate((x0,x1),axis=1))
-            history=model.fit(inp[0],inp[1],epochs=1,verbose=2,validation_split=0)
+            med=Model(inputs=cross_model.input,outputs=cross_model.get_layer('concatenate_6'))
+            inp=med.predict(numpy.concatenate((x0,x1),axis=1))
+            
+            history=model.fit(inp[:][:256],inp[:][256:512],epochs=1,verbose=2,validation_split=0)
+            fout.write(str(history.history['loss'][0]))
+            fout.write('\n')
+            history=model.fit(inp[:][512:768],inp[:][768:],epochs=1,verbose=2,validation_split=0)
+            
             fout.write(str(history.history['loss'][0]))
             fout.write('\n')
             ins=[]
