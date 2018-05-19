@@ -195,7 +195,7 @@ def mine_pretrain(default_model,epoch,batch_size,foutname,offset,double=False):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
 
-def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
+def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
     model=None
     global sent_len
@@ -203,6 +203,7 @@ def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,si
     if(epoch<0):
         return
     ins=[]
+    pos=[]
     ftrue=open('./true_context.csv','r')
     ffalse=open('./false_context.csv','r')
     tplaces=pickle.load(open('./truepos.txt','rb'))
@@ -247,25 +248,34 @@ def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,si
             tins=[True,trues[0],trues[1]]
             tins=clean_up(tins,sent_len)
             ins.append(tins)
+            pos.append([read_pos(trues[0]),read_pos(trues[1])])
         if(falses[0]!=''):
             fins=[False,falses[0],falses[1]]
             fins=clean_up(fins,sent_len)
             ins.append(fins)
+            pos.append([read_pos(falses[0]),read_pos(falses[1])])
         if(len(ins)>=batch_size and batch_size>0):
-            x0=numpy.stack([k[0] for k in ins])
-            x1=numpy.stack([k[1] for k in ins])
-            y=numpy.stack([k[2] for k in ins])
-            med=Model(inputs=cross_model.input,outputs=cross_model.get_layer('concatenate_6').output)
-            inp=med.predict(numpy.concatenate((x0,x1),axis=1))
-            
-            history=model.fit(inp[:][:256],inp[:][256:512],epochs=1,verbose=2,validation_split=0)
-            fout.write(str(history.history['loss'][0]))
-            fout.write('\n')
-            history=model.fit(inp[:][512:768],inp[:][768:],epochs=1,verbose=2,validation_split=0)
-            
-            fout.write(str(history.history['loss'][0]))
-            fout.write('\n')
+            if(singular==False):
+                x0=numpy.stack([k[0] for k in ins])
+                x1=numpy.stack([k[1] for k in ins])
+                p0=numpy.stack([k[0] for k in pos])
+                p1=numpy.stack([k[1] for k in pos])
+                #p0.resize([batch_size,sent_len,46,1])
+                #p1.resize([batch_size,sent_len,46,1])
+                
+                y=numpy.stack([k[2] for k in ins])
+                med=Model(inputs=old_model.input,outputs=old_model.get_layer('concatenate_6').output)
+                vals=med.predict([x0,p0,x1,p1])
+                history=model.fit(vals[:256],vals[256:512],verbose=2,validation_split=0,epochs=1)
+                fout.write(str(history.history['loss'][0]))
+                fout.write('\n')
+                history=model.fit(vals[512:768],vals[768:1024],verbose=2,validation_split=0,epochs=1)
+                fout.write(str(history.history['loss'][0]))
+                fout.write('\n')
+                
+                #history=model.fit([x0,,x1,numpy.zeros(p1.shape)],y,epochs=1,verbose=2,validation_split=0)
             ins=[]
+            pos=[]
         if(time.time()-start_time>=1900):
             model.save(model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(i),str(i)])
@@ -279,6 +289,7 @@ def ana_train(cross_model,default_model,epoch,batch_size,foutname,testoutname,si
     if(epoch>0):
         subprocess.Popen(['python3',foutname+'.py',str(epoch-1),'0','0'])
         return
+
     
 def train(default_model,epoch,batch_size,foutname,testoutname,singular,toffset=0,foffset=0):
     start_time=time.time()
