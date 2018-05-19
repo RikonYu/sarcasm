@@ -76,7 +76,7 @@ if(TRAINING):
     ana_out=Dense(256,activation='linear')(ana_hid)
     model=Model(inputs=ana_in,outputs=ana_out)
     model.compile(optimizer='adam',loss='MSE')
-    utils.ana_train(old_model,model,TRAINING,2048,'ana','ana-test.txt',False,toffset,foffset)
+    utils.ana_train(old_model,model,TRAINING,2048,'analyse','analyse-test.txt',False,toffset,foffset)
 else:
     min_loss=1000
     min_pos=-1
