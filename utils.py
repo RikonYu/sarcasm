@@ -266,10 +266,10 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
                 y=numpy.stack([k[2] for k in ins])
                 med=Model(inputs=old_model.input,outputs=old_model.get_layer('concatenate_6').output)
                 vals=med.predict([x0,p0,x1,p1])
-                history=model.fit(vals[:256],vals[256:512],verbose=2,validation_split=0,epochs=1)
+                history=model.fit(vals[:,:256],vals[:,256:512],verbose=2,validation_split=0,epochs=1)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
-                history=model.fit(vals[512:768],vals[768:1024],verbose=2,validation_split=0,epochs=1)
+                history=model.fit(vals[:,512:768],vals[:,768:1024],verbose=2,validation_split=0,epochs=1)
                 fout.write(str(history.history['loss'][0]))
                 fout.write('\n')
                 

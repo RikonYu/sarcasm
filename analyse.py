@@ -68,7 +68,7 @@ if(TRAINING):
     left_out=forward(left_inp,left_pos)
     right_out=forward(right_inp,right_pos)
     #use left_out[0] and right_out[0] as input, left_out[1] and right_out[1] as output
-    ana_in=Input(shape=(None,256),dtype='float32')
+    ana_in=Input(shape=(256,),dtype='float32')
     old_model=load_model('mine.h5')
     #print(old_model.summary())
     #raise Exception
