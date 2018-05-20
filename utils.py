@@ -491,7 +491,7 @@ def test(model,singular=True):
         correct+=ans[1]
         total+=1
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
-def mine_test(model,singular=False):
+def mine_test(old_model,model,singular=False):
     total=0
     correct=0
     loss=0
@@ -507,10 +507,17 @@ def mine_test(model,singular=False):
             continue
         ins=clean_up([int(row[2]),row[0],row[1]],sent_len)
         pos=[read_pos(row[0]),read_pos(row[1])]
-        ans=model.evaluate([numpy.array([ins[0]]),numpy.array([pos[0]]),numpy.array([ins[1]]),numpy.array([pos[1]])],categ([int(row[2])],2),verbose=0)
+        med=Model(inputs=old_model.input,outputs=old_model.get_layer('concatenate_6').output)
+        Y=med.predict([numpy.array([ins[0]]),numpy.array([pos[0]]),numpy.array([ins[1]]),numpy.array([pos[1]])])
+        ans=model.evaluate(Y[:256],Y[256:512],verbose=0)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
+        ans=model.evaluate(Y[512:768],Y[768:],verbose=0)
+        loss+=ans[0]
+        correct+=ans[1]
+        total+=1
+        
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
 if __name__=='__main__':
     maker()
