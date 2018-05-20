@@ -532,11 +532,11 @@ def ana_test(old_model,model,singular=False):
         pos=[read_pos(row[0]),read_pos(row[1])]
         med=Model(inputs=old_model.input,outputs=old_model.get_layer('concatenate_6').output)
         Y=med.predict([numpy.array([ins[0]]),numpy.array([pos[0]]),numpy.array([ins[1]]),numpy.array([pos[1]])])
-        ans=model.evaluate(Y[:256],Y[256:512],verbose=0)
+        ans=model.evaluate(Y[:,:256],Y[:,256:512],verbose=0)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
-        ans=model.evaluate(Y[512:768],Y[768:],verbose=0)
+        ans=model.evaluate(Y[:,512:768],Y[:,768:],verbose=0)
         loss+=ans[0]
         correct+=ans[1]
         total+=1
