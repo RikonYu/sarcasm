@@ -208,12 +208,12 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
     ffalse=open('./false_context.csv','r')
     tplaces=pickle.load(open('./truepos.txt','rb'))
     fplaces=pickle.load(open('./falsepos.txt','rb'))
+    '''
     try:
         os.remove(testoutname)
         os.remove(foutname)
     except:
         pass
-
     if(toffset==0):
         if(os.path.isfile(model_name)):
             model=load_model(model_name)
@@ -230,6 +230,8 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
     else:
         model=load_model(model_name)
         print('resume %s'%model_name)
+    '''
+    model=default_model
     tposfile=open('truepos.txt','rb')
     fposfile=open('falsepos.txt','rb')
     tpos=pickle.load(tposfile)[:-1]
@@ -545,7 +547,7 @@ def ana_test(old_model,model,singular=False):
         loss+=ans
         #correct+=ans[1]
         total+=1
-        if(total>4096):
+        if(total>2048):
             break
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
 if __name__=='__main__':
