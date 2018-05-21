@@ -278,11 +278,13 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
                 
                 #history=model.fit([x0,,x1,numpy.zeros(p1.shape)],y,epochs=1,verbose=2,validation_split=0)
             ins=[]
-            pos=[]
+            pos=[
+        '''
         if(time.time()-start_time>=1900):
             model.save(model_name)
             subprocess.Popen(['python3',foutname+'.py',str(epoch),str(i),str(i)])
             return
+        '''
             
     model.save(model_name)
 
