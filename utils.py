@@ -240,7 +240,8 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
         numpy.random.shuffle(tpos)
         numpy.random.shuffle(fpos)
     print("Start training on epoch %d"%epoch)
-    fout=open(foutname+'.txt','a')
+    fout=open(foutname+'.txt','w')
+    testout=open(testoutname,'w')
     for i in range(toffset,len(tpos)):
         trues=getline(ftrue,tpos[i])
         falses=getline(ffalse,fpos[i])
@@ -267,11 +268,13 @@ def ana_train(old_model,default_model,epoch,batch_size,foutname,testoutname,sing
                 med=Model(inputs=old_model.input,outputs=old_model.get_layer('concatenate_6').output)
                 vals=med.predict([x0,p0,x1,p1])
                 history=model.fit(vals[:,:256],vals[:,256:512],verbose=2,validation_split=0,epochs=1)
-                fout.write(str(history.history['loss'][0]))
-                fout.write('\n')
+                h0=history.history['loss'][0]
                 history=model.fit(vals[:,512:768],vals[:,768:1024],verbose=2,validation_split=0,epochs=1)
-                fout.write(str(history.history['loss'][0]))
+                fout.write(str((h0+history.history['loss'][0])/2.0))
                 fout.write('\n')
+                test_err=ana_test(old_model,model,singular)[3]
+                testout.write(str(test_err))
+                testout.write('\n')
                 
                 #history=model.fit([x0,,x1,numpy.zeros(p1.shape)],y,epochs=1,verbose=2,validation_split=0)
             ins=[]
