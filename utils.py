@@ -545,7 +545,7 @@ def ana_test(old_model,model,singular=False):
         loss+=ans
         #correct+=ans[1]
         total+=1
-        if(total>8192):
+        if(total>4096):
             break
     return 'accuracy:',str(correct/total),'CE loss:',str(loss/total)
 if __name__=='__main__':
