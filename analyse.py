@@ -72,8 +72,8 @@ if(TRAINING):
     old_model=load_model('mine.h5')
     #print(old_model.summary())
     #raise Exception
-    ana_hid=Dense(1024,activation='sigmoid')(ana_in)
-    ana_out=Dense(256,activation='linear')(ana_hid)
+    #ana_hid=Dense(1024,activation='sigmoid')(ana_in)
+    ana_out=Dense(256,activation='linear')(ana_in)
     model=Model(inputs=ana_in,outputs=ana_out)
     model.compile(optimizer='adam',loss='MSE')
     utils.ana_train(old_model,model,TRAINING,2048,'analyse','analyse-test.txt',False,toffset,foffset)
